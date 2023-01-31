@@ -26,8 +26,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+app.config['WTF_CSRF_ENABLED'] = False
 
 connect_db(app)
+
+db.create_all()
 
 def token_required(f):
     @wraps(f)
@@ -51,11 +54,12 @@ def token_required(f):
 def login():
     '''Handle user login and return token on success'''
 
-    form = LoginForm()
+    data = request.get_json()
+    form = LoginForm(data=data)
 
     if form.validate_on_submit():
-        email = request.json.email
-        password = request.json.password
+        email = form.data["email"]
+        password = form.data["password"]
         curr_user = User.authenticate(email, password)
         if curr_user:
             token = jwt.encode({
@@ -68,22 +72,23 @@ def login():
     else:
         return jsonify({'errors': form.errors})
 
-app.post('/signup')
+@app.post('/signup')
 def signup():
     '''Handle user signup and return token on success'''
 
-    form = UserAddForm()
+    data = request.get_json()
+    form = UserAddForm(data=data)
 
     if form.validate_on_submit():
         try:
             user = User.signup(
-                password=request.json.password,
-                email=request.json.email,
-                first_name=request.json.firstName,
-                last_name=request.json.lastName,
-                bio=request.json.bio,
-                location=request.json.location,
-                image_url=request.json.imageUrl
+                password=form.data["password"],
+                email=form.data["email"],
+                first_name=form.data["first_name"],
+                last_name=form.data["last_name"],
+                bio=form.data["bio"],
+                location=form.data["location"],
+                image_url=form.data["image_url"]
             )
             db.session.commit()
             token = jwt.encode({
@@ -93,7 +98,7 @@ def signup():
             return jsonify({'token': token}), 201
 
         except IntegrityError:
-            return jsonify({'message': 'Username already taken'})
+            return jsonify({'message': 'Email already taken'})
 
     else:
         return jsonify({'errors': form.errors})
