@@ -11,7 +11,8 @@ class UserAddForm(FlaskForm):
     last_name = StringField('Last Name', validators=[DataRequired()])
     image_url = StringField('(Optional) Profile Image')
     bio = TextAreaField('Bio',validators=[Length(max=250)])
-    location = IntegerField('Location',validators=[Length(max=250)])
+    location = IntegerField('Location',)
+    radius = IntegerField('Match Radius')
 
 class LoginForm(FlaskForm):
     """Login form."""

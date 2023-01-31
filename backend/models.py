@@ -82,6 +82,11 @@ class User(db.Model):
         nullable=False,
     )
 
+    radius = db.Column(
+        db.Integer,
+        nullable=False,
+    )
+
     password = db.Column(
         db.Text,
         nullable=False,
@@ -150,11 +155,32 @@ class User(db.Model):
 
 
 
-    ## method that shows available users based on location
-    def available_users(self):
-        # people who we don't dislike
-        # people who
+    ## TODO: Add radius functionality
+    def get_next_available_user(cls, self):
+        """Gets a user who the current user has yet to see"""
+        disliked_users_ids = [user.id for user in self.disliking]
+        liked_users_ids = [user.id for user in self.liking]
+        available_user = cls.query.filter_by(
+            cls.id.not_in(
+                liked_users_ids + disliked_users_ids
+            )
+        ).first()
+        return available_user
 
     ## method that shows matches
-    def matches(self):
-        """"""
+    def get_matches(self):
+        """Gets all matches for a user"""
+        liked_user_ids = set([user.id for user in self.liking])
+        liked_by_user_ids = set([user.id for user in self.likers])
+        matches = list(liked_by_user_ids.intersection(liked_user_ids))
+        return matches
+
+    def connect_db(app):
+        """Connect this database to provided Flask app.
+
+        You should call this in your Flask app.
+        """
+
+        app.app_context().push()
+        db.app = app
+        db.init_app(app)
