@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 from flask import (
     Flask, request, jsonify, g
@@ -7,7 +8,7 @@ from flask import (
 from sqlalchemy.exc import IntegrityError
 
 from forms import (
-    UserAddForm, LoginForm
+    UserAddForm, LoginForm, UploadImageForm
 )
 from models import (
     db, connect_db, User, Likes)
@@ -20,7 +21,16 @@ from flask_jwt_extended import (
     JWTManager,
     get_current_user
 )
+import boto3
+from werkzeug.utils import secure_filename
 load_dotenv()
+
+s3 = boto3.client('s3',
+    aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
+    aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY']
+)
+BUCKET_NAME = os.environ['BUCKET_NAME']
+BASE_AWS_URL = os.environ['BASE_AWS_URL']
 
 
 app = Flask(__name__)
@@ -34,6 +44,8 @@ app.config['SQLALCHEMY_ECHO'] = False
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 app.config["JWT_SECRET_KEY"] = os.environ['SECRET_KEY']
 app.config['WTF_CSRF_ENABLED'] = False
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = False
 jwt = JWTManager(app)
 
 connect_db(app)
@@ -59,6 +71,7 @@ def add_user_to_g():
 #     return User.query.filter_by(id=identity).one_or_none()
 
 
+# TODO: Get location
 @app.post('/login')
 def login():
     '''Handle user login and return token on success'''
@@ -92,19 +105,17 @@ def signup():
                 email=form.data["email"],
                 first_name=form.data["first_name"],
                 last_name=form.data["last_name"],
-                bio=form.data["bio"],
                 location=form.data["location"],
-                image_url=form.data["image_url"]
             )
             db.session.commit()
             access_token = create_access_token(identity=user.id)
             return jsonify(access_token=access_token), 201
 
         except IntegrityError:
-            return jsonify({'message': 'Email already taken'})
+            return jsonify(message='Email already taken')
 
     else:
-        return jsonify({'errors': form.errors})
+        return jsonify(errors=form.errors)
 
 @app.get('/users/<int:id>/matches')
 @jwt_required()
@@ -146,8 +157,89 @@ def like(like_id):
 
     return jsonify(message="liked")
 
+@app.post('/users/dislike/<int:dislike_id>')
+@jwt_required()
+def dislike(dislike_id):
+    '''Dislikes a user'''
+    disliked_user = User.query.get_or_404(dislike_id)
+    g.user.disliking.append(disliked_user)
+    db.session.commit()
 
+    return jsonify(message="disliked")
 
+@app.get('/matches')
+@jwt_required()
+def get_user_matches():
+    '''Gets logged in users matches'''
+    matches_id = g.user.get_matches()
+    matches = [User.query.get_or_404(id).serialize() for id in matches_id]
+    return jsonify(matches=matches)
+
+# @app.post('/upload')
+# def upload_picture():
+#     '''Uploads user inputted picture'''
+#     if "user_image" not in request.files:
+#         return jsonify(message="No user_image key in request.files")
+
+#     file = request.files["user_image"]
+
+#     if file.filename == "":
+#         return jsonify(message="Please select a file")
+
+#     if file:
+#         file.filename = secure_filename(file.filename)
+#         output = send_to_s3(file, BUCKET_NAME)
+#         return jsonify(output=output)
+
+#     else:
+#         return jsonify(message='No file uploaded')
+
+# def send_to_s3(file, bucket_name, acl="public-read"):
+#     """
+#     Docs: http://boto3.readthedocs.io/en/latest/guide/s3.html
+#     TODO: update?
+#     """
+#     try:
+#         s3.upload_fileobj(
+#             file,
+#             bucket_name,
+#             file.filename,
+#             ExtraArgs={
+#                 "ACL": acl,
+#                 "ContentType": file.
+#             }
+#         )
+#     except Exception as e:
+#         print("Something Happened: ", e)
+#         return e
+#     return "{}{}".format
+
+# TODO: Think about error handling
+@app.post('/upload')
+@jwt_required()
+def upload():
+    '''Upload image to s3'''
+    form = UploadImageForm()
+
+    if form.validate_on_submit():
+        img = request.files['file']
+        if img:
+            filename_raw = secure_filename(img.filename)
+            parts = filename_raw.split('.')
+            extension = parts[-1]
+            filename = f'user{g.user.id}_image.{extension}'
+            img.save(filename)
+            s3.upload_file(
+                Bucket = BUCKET_NAME,
+                Filename = filename,
+                Key = filename
+            )
+            filename = f'{BASE_AWS_URL}/user{g.user.id}_image.{extension}'
+            g.user.image_url = filename
+            db.session.commit()
+            return jsonify(message='Upload Done!')
+    else:
+        return jsonify(errors=form.errors)
 
 # @app.post('/users/')
 # @jwt_required()
