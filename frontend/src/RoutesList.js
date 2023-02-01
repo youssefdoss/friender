@@ -4,7 +4,7 @@ import Signup from "./auth/Signup"
 import MatchList from "./Matches/MatchList"
 import Profile from "./Profile/Profile"
 import UserProfileEdit from "./UserProfileEdit/UserProfileEdit"
-import userContext from "./UserContext";
+import userContext from "./userContext";
 import { useContext } from "react";
 import NotFound from "./NotFound";
 
