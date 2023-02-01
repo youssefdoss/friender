@@ -58,18 +58,6 @@ def add_user_to_g():
     """If we're logged in, add curr user to Flask global."""
     g.user = User.query.filter_by(id=get_jwt_identity()).one_or_none()
 
-# @jwt.user_identity_loader
-# def user_identity_lookup(user):
-#     '''TODO:'''
-#     return user.id
-
-
-# @jwt.user_lookup_loader
-# def user_lookup_callback(_jwt_header, jwt_data):
-#     '''TODO:'''
-#     identity = jwt_data["sub"]
-#     return User.query.filter_by(id=identity).one_or_none()
-
 
 # TODO: Get location
 @app.post('/login')
@@ -122,12 +110,13 @@ def signup():
 def get_all_matches():
     """Gets all matches associated with user id"""
     current_user = get_current_user()
-    print(current_user)
     user = User.query.get_or_404(id)
     matches = user.get_matches()
 
     return jsonify(matches=matches)
 
+
+# middleware to check if matching user id or admin
 
 @app.get('/users/profile')
 @jwt_required()
@@ -135,6 +124,9 @@ def curr_user_profile():
     """Gets current logged in user profile"""
     return jsonify(user=g.user.serialize())
 
+
+# @app.patch('/upload')
+# @jwt_required()
 
 @app.get('/users/<int:id>')
 @jwt_required()
@@ -157,6 +149,8 @@ def like(like_id):
 
     return jsonify(message="liked")
 
+#users/id/like
+#users/id/like/like_id
 @app.post('/users/dislike/<int:dislike_id>')
 @jwt_required()
 def dislike(dislike_id):
@@ -167,54 +161,7 @@ def dislike(dislike_id):
 
     return jsonify(message="disliked")
 
-@app.get('/matches')
-@jwt_required()
-def get_user_matches():
-    '''Gets logged in users matches'''
-    matches_id = g.user.get_matches()
-    matches = [User.query.get_or_404(id).serialize() for id in matches_id]
-    return jsonify(matches=matches)
 
-# @app.post('/upload')
-# def upload_picture():
-#     '''Uploads user inputted picture'''
-#     if "user_image" not in request.files:
-#         return jsonify(message="No user_image key in request.files")
-
-#     file = request.files["user_image"]
-
-#     if file.filename == "":
-#         return jsonify(message="Please select a file")
-
-#     if file:
-#         file.filename = secure_filename(file.filename)
-#         output = send_to_s3(file, BUCKET_NAME)
-#         return jsonify(output=output)
-
-#     else:
-#         return jsonify(message='No file uploaded')
-
-# def send_to_s3(file, bucket_name, acl="public-read"):
-#     """
-#     Docs: http://boto3.readthedocs.io/en/latest/guide/s3.html
-#     TODO: update?
-#     """
-#     try:
-#         s3.upload_fileobj(
-#             file,
-#             bucket_name,
-#             file.filename,
-#             ExtraArgs={
-#                 "ACL": acl,
-#                 "ContentType": file.
-#             }
-#         )
-#     except Exception as e:
-#         print("Something Happened: ", e)
-#         return e
-#     return "{}{}".format
-
-# TODO: Think about error handling
 @app.post('/upload')
 @jwt_required()
 def upload():
@@ -225,21 +172,23 @@ def upload():
         img = request.files['file']
         if img:
             filename_raw = secure_filename(img.filename)
-            parts = filename_raw.split('.')
-            extension = parts[-1]
-            filename = f'user{g.user.id}_image.{extension}'
-            img.save(filename)
-            s3.upload_file(
-                Bucket = BUCKET_NAME,
-                Filename = filename,
-                Key = filename
+            _, file_extension = os.path.splitext(filename_raw)
+            filename = f'user{g.user.id}_image{file_extension}'
+
+            s3.upload_fileobj(
+                img,
+                BUCKET_NAME,
+                filename
             )
-            filename = f'{BASE_AWS_URL}/user{g.user.id}_image.{extension}'
-            g.user.image_url = filename
+
+            image_url = f'{BASE_AWS_URL}/{filename}'
+            g.user.image_url = image_url
+
             db.session.commit()
             return jsonify(message='Upload Done!')
     else:
         return jsonify(errors=form.errors)
+
 
 # @app.post('/users/')
 # @jwt_required()

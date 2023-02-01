@@ -10,10 +10,17 @@ class UserAddForm(FlaskForm):
     password = PasswordField('Password', validators=[Length(min=6)])
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
-    image_url = StringField('(Optional) Profile Image')
-    bio = TextAreaField('Bio',validators=[Length(max=250)])
     location = IntegerField('Location',validators=[DataRequired()])
-    radius = IntegerField('Match Radius')
+
+class UserUpdateForm(FlaskForm):
+    """Form for updating a user."""
+
+    password = PasswordField('Password', validators=[Length(min=6)])
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    location = IntegerField('Location',validators=[DataRequired()])
+    radius = IntegerField('radius',validators=[DataRequired()])
+    bio = TextAreaField('bio',validators=[DataRequired()])
 
 class LoginForm(FlaskForm):
     """Login form."""
@@ -23,5 +30,4 @@ class LoginForm(FlaskForm):
 
 class UploadImageForm(FlaskForm):
     '''Image upload form'''
-
     file = FileField('Image', [DataRequired()])
