@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 from flask import (
-    Flask, request, jsonify
+    Flask, request, jsonify, g
 )
 from sqlalchemy.exc import IntegrityError
 
@@ -12,8 +12,8 @@ from forms import (
 from models import (
     db, connect_db, User, Likes)
 from functools import wraps
-import jwt
 
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
 load_dotenv()
 
 
@@ -26,29 +26,20 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+app.config["JWT_SECRET_KEY"] = os.environ['SECRET_KEY']
 app.config['WTF_CSRF_ENABLED'] = False
+jwt = JWTManager(app)
 
 connect_db(app)
 
 db.create_all()
 
-def token_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        token = None
-        if 'authorization' in request.headers:
-            token = request.headers['authorization']
-        if not token:
-            return jsonify({'message': 'Token is missing'}), 401
+@app.before_request
+@jwt_required()
+def add_user_to_g():
+    """If we're logged in, add curr user to Flask global."""
+    g.user = User.query.get_or_404(get_jwt_identity())
 
-        try:
-            data = jwt.decode(token, app.config['SECRET_KEY'])
-            curr_user = User.query.filter_by(id = data['id']).first()
-        except:
-            return jsonify({'message': 'Invalid token'}), 401
-
-        return f(curr_user, *args, **kwargs)
-    return decorated
 
 @app.post('/login')
 def login():
@@ -60,17 +51,14 @@ def login():
     if form.validate_on_submit():
         email = form.data["email"]
         password = form.data["password"]
-        curr_user = User.authenticate(email, password)
-        if curr_user:
-            token = jwt.encode({
-                'id': curr_user.id,
-                'name': curr_user.first_name
-            }, app.config['SECRET_KEY'])
-            return jsonify({'token': token}), 201
+        user = User.authenticate(email, password)
+        if user:
+            access_token = create_access_token(identity=user.id)
+            return jsonify(access_token=access_token), 201
         else:
-            return jsonify({'message': 'Invalid Credentials'})
+            return jsonify(message='Invalid Credentials')
     else:
-        return jsonify({'errors': form.errors})
+        return jsonify(errors=form.errors)
 
 @app.post('/signup')
 def signup():
@@ -91,17 +79,49 @@ def signup():
                 image_url=form.data["image_url"]
             )
             db.session.commit()
-            token = jwt.encode({
-                'id': user.id,
-                'name': user.first_name
-            }, app.config['SECRET_KEY'])
-            return jsonify({'token': token}), 201
+            access_token = create_access_token(identity=user.id)
+            return jsonify(access_token=access_token), 201
 
         except IntegrityError:
             return jsonify({'message': 'Email already taken'})
 
     else:
         return jsonify({'errors': form.errors})
+
+@app.get('/users/<int:id>/matches')
+@jwt_required()
+def get_all_matches():
+    """Gets all matches associated with user id"""
+    user = User.query.get_or_404(id)
+    matches = user.get_matches()
+
+    return jsonify(matches=matches)
+
+
+@app.get('/users/profile')
+@jwt_required()
+def curr_user_profile():
+    """Gets current logged in user profile"""
+    return jsonify(user=g.user.serialize())
+
+
+@app.get('/users/<int:id>')
+@jwt_required()
+def user_profile(id):
+    """Gets all user information associated with user id"""
+    user = User.query.get_or_404(id)
+
+    return jsonify(user=user.get_display_info())
+
+
+
+
+# @app.post('/users/')
+# @jwt_required()
+# def user_profile():
+#     """Gets all user information associated with user id"""
+
+
 
 
 

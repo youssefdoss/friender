@@ -152,6 +152,15 @@ class User(db.Model):
 
         return False
 
+    def get_display_info(self):
+        """Gets display info for a user"""
+        return {
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "image_url": self.image_url,
+            "bio": self.bio
+        }
 
 
     ## TODO: Add radius functionality
@@ -174,6 +183,17 @@ class User(db.Model):
         matches = list(liked_by_user_ids.intersection(liked_user_ids))
         return matches
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "email": self.email,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "image_url": self.image_url,
+            "bio": self.bio,
+            "location": self.location,
+            "radius": self.radius,
+        }
 def connect_db(app):
     """Connect this database to provided Flask app.
 
