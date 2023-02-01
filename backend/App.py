@@ -13,7 +13,13 @@ from models import (
     db, connect_db, User, Likes)
 from functools import wraps
 
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
+from flask_jwt_extended import (
+    create_access_token,
+    get_jwt_identity,
+    jwt_required,
+    JWTManager,
+    get_current_user
+)
 load_dotenv()
 
 
@@ -35,10 +41,22 @@ connect_db(app)
 db.create_all()
 
 @app.before_request
-@jwt_required()
+@jwt_required(optional=True)
 def add_user_to_g():
     """If we're logged in, add curr user to Flask global."""
-    g.user = User.query.get_or_404(get_jwt_identity())
+    g.user = User.query.filter_by(id=get_jwt_identity()).one_or_none()
+
+# @jwt.user_identity_loader
+# def user_identity_lookup(user):
+#     '''TODO:'''
+#     return user.id
+
+
+# @jwt.user_lookup_loader
+# def user_lookup_callback(_jwt_header, jwt_data):
+#     '''TODO:'''
+#     identity = jwt_data["sub"]
+#     return User.query.filter_by(id=identity).one_or_none()
 
 
 @app.post('/login')
@@ -92,6 +110,8 @@ def signup():
 @jwt_required()
 def get_all_matches():
     """Gets all matches associated with user id"""
+    current_user = get_current_user()
+    print(current_user)
     user = User.query.get_or_404(id)
     matches = user.get_matches()
 
@@ -112,6 +132,19 @@ def user_profile(id):
     user = User.query.get_or_404(id)
 
     return jsonify(user=user.get_display_info())
+
+@app.post('/users/like/<int:like_id>')
+@jwt_required()
+def like(like_id):
+    '''Likes a user'''
+    liked_user = User.query.get_or_404(like_id)
+    g.user.liking.append(liked_user)
+    db.session.commit()
+
+    if g.user in liked_user.liking:
+        return jsonify(message="match")
+
+    return jsonify(message="liked")
 
 
 
