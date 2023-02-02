@@ -1,9 +1,9 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import AlertContainer from '../AlertContainer';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
+import { Link } from "react-router-dom";
 
 /** TODO: */
 function Login({ login }){
@@ -16,8 +16,6 @@ function Login({ login }){
     messages: [],
     type: "danger",
   });
-
-  const navigate = useNavigate();
 
   /** Updates state on form input change */
   function handleChange(evt) {
@@ -33,7 +31,6 @@ function Login({ login }){
     evt.preventDefault();
     try {
       await login(formData);
-      navigate("/");
     } catch (err) {
       setErrors((prev) => ({
         ...prev,
@@ -72,6 +69,7 @@ function Login({ login }){
             </Button>
           </Form>
         </Card>
+        <p>Don't have an account? <Link to="/signup">Sign up</Link>.</p>
       </div>
     </div>
   );

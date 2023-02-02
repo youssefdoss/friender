@@ -21,6 +21,9 @@ from flask_jwt_extended import (
     JWTManager,
     get_current_user
 )
+
+from flask_cors import CORS
+
 import boto3
 from werkzeug.utils import secure_filename
 load_dotenv()
@@ -33,6 +36,8 @@ BUCKET_NAME = os.environ['BUCKET_NAME']
 BASE_AWS_URL = os.environ['BASE_AWS_URL']
 
 app = Flask(__name__)
+
+CORS(app)
 
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
@@ -55,24 +60,26 @@ db.create_all()
 @jwt_required(optional=True)
 def add_user_to_g():
     """If we're logged in, add curr user to Flask global."""
-    g.user = User.query.filter_by(id=get_jwt_identity()).one_or_none()
+    try:
+        g.user = User.query.filter_by(id=get_jwt_identity()).one_or_none()
+    except:
+        g.user = None
 
 
 # TODO: Get location
 @app.post('/login')
 def login():
     '''Handle user login and return token on success'''
-
     data = request.get_json()
     form = LoginForm(data=data)
-
+    print(data)
     if form.validate_on_submit():
         email = form.data["email"]
         password = form.data["password"]
         user = User.authenticate(email, password)
         if user:
             access_token = create_access_token(identity=user.id)
-            return jsonify(access_token=access_token), 201
+            return jsonify(token=access_token), 201
         else:
             return jsonify(message='Invalid Credentials')
     else:
@@ -90,13 +97,13 @@ def signup():
             user = User.signup(
                 password=form.data["password"],
                 email=form.data["email"],
-                first_name=form.data["first_name"],
-                last_name=form.data["last_name"],
+                first_name=form.data["firstName"],
+                last_name=form.data["lastName"],
                 location=form.data["location"],
             )
             db.session.commit()
             access_token = create_access_token(identity=user.id)
-            return jsonify(access_token=access_token), 201
+            return jsonify(token=access_token), 201
 
         except IntegrityError:
             return jsonify(message='Email already taken')
@@ -111,6 +118,8 @@ def get_all_matches():
     current_user = get_current_user()
     user = User.query.get_or_404(id)
     matches = user.get_matches()
+
+    print(matches)
 
     return jsonify(matches=matches)
 
@@ -135,8 +144,8 @@ def edit_profile(id):
         user = g.user
 
         if form.validate_on_submit():
-            user.first_name = form.data.get('first_name')
-            user.last_name = form.data.get('last_name')
+            user.first_name = form.data.get('firstName')
+            user.last_name = form.data.get('lastName')
             user.location = form.data.get('location')
             user.radius = form.data.get('radius')
             user.bio = form.data.get('bio')

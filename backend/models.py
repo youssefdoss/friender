@@ -156,9 +156,9 @@ class User(db.Model):
         """Gets display info for a user"""
         return {
             "id": self.id,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "image_url": self.image_url,
+            "firstName": self.first_name,
+            "lastName": self.last_name,
+            "imageUrl": self.image_url,
             "bio": self.bio
         }
 
@@ -181,15 +181,31 @@ class User(db.Model):
         liked_user_ids = set([user.id for user in self.liking])
         liked_by_user_ids = set([user.id for user in self.likers])
         matches = list(liked_by_user_ids.intersection(liked_user_ids))
+
+        matches = [self.serialize_display(match) for match in matches]
+
         return matches
 
+    def serialize_display(self, match):
+        """Serialize other user object"""
+        return {
+            "id": match.id,
+            "email": match.email,
+            "firstName": match.first_name,
+            "imageUrl": match.image_url,
+            "bio": match.bio,
+            "location": match.location,
+            "radius": match.radius,
+        }
+
     def serialize(self):
+        """Serialize self user object"""
         return {
             "id": self.id,
             "email": self.email,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "image_url": self.image_url,
+            "firstName": self.first_name,
+            "lastName": self.last_name,
+            "imageUrl": self.image_url,
             "bio": self.bio,
             "location": self.location,
             "radius": self.radius,

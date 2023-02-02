@@ -11,16 +11,24 @@ class FrienderApi {
     console.debug("API Call:", endpoint, data, method);
 
     const url = `${BASE_URL}/${endpoint}`;
-    let headers = { Authorization: `Bearer ${FrienderApi.token}` };
-    if (endpoint === 'upload') {
-      headers['Content-Type'] = 'multipart/form-data';
-    }
-    const params = (method === "get")
-        ? data
-        : {};
+    let headers = {
+      Authorization: `Bearer ${FrienderApi.token}`,
+      "Content-Type": `application/json`,
+    };
 
+    if(endpoint=== "login" || endpoint === "signup") {
+      headers = {
+        "Content-Type": `application/json`
+      }
+    }
+    if (endpoint === "upload") {
+      headers["Content-Type"] = "multipart/form-data";
+    }
+    const params = method === "get" ? data : {};
     try {
-      return (await axios({ url, method, data, params, headers })).data;
+      const result = await axios({ url, method, data, params, headers });
+      return result.data;
+
     } catch (err) {
       console.error("API Error:", err.response);
       let message = err.response.data.error.message;
@@ -38,8 +46,8 @@ class FrienderApi {
    */
 
   static async login(data) {
-    let res = await this.request('login', data, 'post');
-    return res.token
+    let res = await this.request("login", data, "post");
+    return res.token;
   }
 
   /** Signup user
@@ -50,8 +58,10 @@ class FrienderApi {
    */
 
   static async signup(data) {
-    let res = await this.request('signup', data, 'post');
-    return res.token
+    console.log('data',data);
+    let res = await this.request("signup", data, "post");
+    console.log('res',res);
+    return res.token;
   }
 
   /** Edit user
@@ -62,8 +72,8 @@ class FrienderApi {
    */
 
   static async edit(data, id) {
-    let res = await this.request(`users/${id}`, data, 'patch');
-    return res.user
+    let res = await this.request(`users/${id}`, data, "patch");
+    return res.user;
   }
 
   /** Get current user
@@ -86,7 +96,7 @@ class FrienderApi {
    */
 
   static async likeUser(id) {
-    let res = await this.request(`users/like/${id}`, {}, 'post');
+    let res = await this.request(`users/like/${id}`, {}, "post");
     return res;
   }
 
@@ -98,7 +108,7 @@ class FrienderApi {
    */
 
   static async dislikeUser(id) {
-    let res = await this.request(`users/dislike/${id}`, {}, 'post');
+    let res = await this.request(`users/dislike/${id}`, {}, "post");
     return res;
   }
 
@@ -122,7 +132,7 @@ class FrienderApi {
    */
 
   static async uploadImage(data) {
-    let res = await this.request(`upload`, data, 'post', );
+    let res = await this.request(`upload`, data, "post");
     return res;
   }
 }

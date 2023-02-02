@@ -10,14 +10,14 @@ import { useContext } from "react";
 import NotFound from "./NotFound";
 
 /** TODO: */
-function RoutesList({ login }){
+function RoutesList({ login, signup }){
   const { user } = useContext(userContext)
   return(
     <Routes>
       {!user &&
         <>
           <Route path="/login" element={<Login login={login}/>}/>
-          <Route path="/signup" element={<Signup/>}/>
+          <Route path="/signup" element={<Signup signup={signup}/>}/>
           <Route path="*" element={<Navigate to="/login"/>}/>
         </>
       }
@@ -27,7 +27,7 @@ function RoutesList({ login }){
           <Route path="/edit-profile" element={<UserProfileEdit/>}/>
           <Route path="/users/:id" element={<Profile/>}/>
           <Route path="/" element={<AvailableUser/>}/>
-          <Route path="*" element={<NotFound/>}/>
+          <Route path="*" element={<Navigate to="/"/>}/>
         </>
       }
     </Routes>

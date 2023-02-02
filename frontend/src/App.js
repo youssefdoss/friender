@@ -60,7 +60,7 @@ function App() {
    * data: {email, password}
    */
   async function login(data) {
-    const token = await FrienderApi.login()
+    const token = await FrienderApi.login(data)
     setToken(token);
   }
 
@@ -69,9 +69,12 @@ function App() {
    * data: {email, password, firstName, lastName, location}
    */
   async function signup(data) {
-    const token = await FrienderApi.signup()
+    const token = await FrienderApi.signup(data)
     setToken(token);
   }
+
+
+  if(user.isLoading) return <h1>loading...</h1>
 
   /** Edits a user's profile information and updates across app
    *
@@ -82,10 +85,10 @@ function App() {
     <div className="App">
       <userContext.Provider value={{ user: user.data }} >
         <BrowserRouter>
-          {user &&
+          {user.data &&
             <NavBar logout={logout} />
           }
-          <RoutesList login={login}/>
+          <RoutesList login={login} signup={signup}/>
         </BrowserRouter>
       </userContext.Provider>
     </div>
