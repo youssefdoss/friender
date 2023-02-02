@@ -31,6 +31,7 @@ class FrienderApi {
 
     } catch (err) {
       console.error("API Error:", err.response);
+      console.log(err);
       let message = err.response.data.errors;
 
       if (typeof message === 'object' && !Array.isArray(message)) {
@@ -133,7 +134,7 @@ class FrienderApi {
 
   /** Upload image
    *
-   * id: number
+   * data: FormData (data on image file)
    *
    * returns: object - user object
    */

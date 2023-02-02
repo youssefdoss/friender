@@ -32,7 +32,6 @@ function Login({ login }){
     try {
       await login(formData);
     } catch (err) {
-      console.log(err)
       setErrors((prev) => ({
         ...prev,
         messages: err,

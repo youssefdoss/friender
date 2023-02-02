@@ -73,6 +73,21 @@ function App() {
     setToken(token);
   }
 
+  /** Uploads picture to s3 and saves url in db
+   *
+   * data: FormData (file data)
+   */
+  async function uploadPicture(data) {
+    const res = await FrienderApi.uploadImage(data);
+    setUser((prev) => ({
+      ...prev,
+      data: {
+        ...data,
+        imageUrl: res
+      }
+    }));
+  }
+
 
   if(user.isLoading) return <h1>loading...</h1>
 
@@ -88,7 +103,11 @@ function App() {
           {user.data &&
             <NavBar logout={logout} />
           }
-          <RoutesList login={login} signup={signup}/>
+          <RoutesList
+            login={login}
+            signup={signup}
+            uploadPicture={uploadPicture}
+          />
         </BrowserRouter>
       </userContext.Provider>
     </div>

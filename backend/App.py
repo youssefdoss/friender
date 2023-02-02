@@ -213,9 +213,8 @@ def dislike(dislike_id):
 def upload():
     '''Upload image to s3'''
     form = UploadImageForm()
-
     if form.validate_on_submit():
-        img = request.files['file']
+        img = request.files.get('file', None)
         if img:
             filename_raw = secure_filename(img.filename)
             _, file_extension = os.path.splitext(filename_raw)
@@ -231,7 +230,7 @@ def upload():
             g.user.image_url = image_url
 
             db.session.commit()
-            return jsonify(message='Upload Done!')
+            return jsonify(imageUrl=image_url)
     else:
         return jsonify(errors=form.errors), 400
 

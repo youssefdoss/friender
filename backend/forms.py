@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField, IntegerField, FileField
-from wtforms.validators import DataRequired, Email, Length
-from wtforms import validators
+from wtforms.validators import DataRequired, Email, Length, InputRequired
+from flask_wtf.file import FileRequired
 
 class UserAddForm(FlaskForm):
     """Form for adding users."""
@@ -30,4 +30,4 @@ class LoginForm(FlaskForm):
 
 class UploadImageForm(FlaskForm):
     '''Image upload form'''
-    file = FileField('Image', [DataRequired()])
+    file = FileField('Image', [FileRequired()])
