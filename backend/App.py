@@ -5,6 +5,7 @@ from datetime import timedelta
 from flask import (
     Flask, request, jsonify, g
 )
+from sqlalchemy import column
 from sqlalchemy.exc import IntegrityError
 
 from forms import (
@@ -111,6 +112,26 @@ def signup():
     else:
         return jsonify(errors=form.errors), 400
 
+@app.get('/users/<int:id>/available-user')
+@jwt_required()
+def available_user(id):
+    """Gets all user information associated with user id"""
+    if id == g.user.id:
+        try:
+            user = User.query.get_or_404(g.user.id)
+            disliked_users_ids = [u.id for u in user.disliking]
+            liked_users_ids = [u.id for u in user.liking]
+            available_user = User.query.filter_by(
+                ~column("id").in_(
+                    liked_users_ids + disliked_users_ids
+                )
+            ).first()
+            # available_user = user.get_next_available_user()
+
+            return jsonify(user=available_user)
+        except Exception as e:
+            return jsonify(errors=e), 404
+
 @app.get('/users/<int:id>/matches')
 @jwt_required()
 def get_all_matches():
@@ -118,8 +139,6 @@ def get_all_matches():
     current_user = get_current_user()
     user = User.query.get_or_404(id)
     matches = user.get_matches()
-
-    print(matches)
 
     return jsonify(matches=matches)
 
