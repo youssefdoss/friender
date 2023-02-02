@@ -30,8 +30,10 @@ class FrienderApi {
       return result.data;
 
     } catch (err) {
+      console.log(err)
       console.error("API Error:", err.response);
-      let message = err.response.data.error.message;
+      let message = err.response.data.errors;
+      console.log(message);
       throw Array.isArray(message) ? message : [message];
     }
   }
@@ -47,6 +49,7 @@ class FrienderApi {
 
   static async login(data) {
     let res = await this.request("login", data, "post");
+    console.log('res', res)
     return res.token;
   }
 
@@ -58,9 +61,7 @@ class FrienderApi {
    */
 
   static async signup(data) {
-    console.log('data',data);
     let res = await this.request("signup", data, "post");
-    console.log('res',res);
     return res.token;
   }
 

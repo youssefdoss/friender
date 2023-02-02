@@ -81,9 +81,9 @@ def login():
             access_token = create_access_token(identity=user.id)
             return jsonify(token=access_token), 201
         else:
-            return jsonify(message='Invalid Credentials')
+            return jsonify(errors='Invalid Credentials'), 401
     else:
-        return jsonify(errors=form.errors)
+        return jsonify(errors=form.errors), 400
 
 @app.post('/signup')
 def signup():
@@ -106,10 +106,10 @@ def signup():
             return jsonify(token=access_token), 201
 
         except IntegrityError:
-            return jsonify(message='Email already taken')
+            return jsonify(errors='Email already taken'), 400
 
     else:
-        return jsonify(errors=form.errors)
+        return jsonify(errors=form.errors), 400
 
 @app.get('/users/<int:id>/matches')
 @jwt_required()
@@ -157,7 +157,7 @@ def edit_profile(id):
         else:
             return jsonify(errors=form.errors)
     else:
-        return jsonify(message='You cannot edit other profiles')
+        return jsonify(errors='You cannot edit other profiles'), 401
 
 @app.get('/users/<int:id>')
 @jwt_required()
@@ -170,7 +170,7 @@ def user_profile(id):
             user = User.query.get_or_404(id)
             return jsonify(user=user.get_display_info())
         except Exception as e:
-            return jsonify(errors=e)
+            return jsonify(errors=e), 404
 
 @app.post('/users/like/<int:like_id>')
 @jwt_required()
@@ -223,7 +223,7 @@ def upload():
             db.session.commit()
             return jsonify(message='Upload Done!')
     else:
-        return jsonify(errors=form.errors)
+        return jsonify(errors=form.errors), 400
 
 
 # @app.post('/users/')
