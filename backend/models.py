@@ -166,20 +166,19 @@ class User(db.Model):
     ## TODO: Add radius functionality
     def get_next_available_user(self):
         """Gets a user who the current user has yet to see"""
-        disliked_users_ids = [user.id for user in self.disliking]
-        liked_users_ids = [user.id for user in self.liking]
+        disliked_users_ids = [u.id for u in self.disliking]
+        liked_users_ids = [u.id for u in self.liking]
 
         next_available_user = self.query_available_user(liked_users_ids, disliked_users_ids)
 
         return next_available_user
 
     def query_available_user(cls, liked_ids, disliked_ids):
-        available_user = cls.query.filter_by(
-            id.not_in(
-                liked_ids + disliked_ids
-            )
+        print("LIKED IDS", liked_ids)
+        breakpoint()
+        available_user = cls.query.filter(
+            ~cls.id.in_(liked_ids + disliked_ids)
         ).first()
-
         return available_user
 
 

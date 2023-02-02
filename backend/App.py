@@ -115,22 +115,22 @@ def signup():
 @app.get('/users/<int:id>/available-user')
 @jwt_required()
 def available_user(id):
-    """Gets all user information associated with user id"""
+    """Gets all user information associated with user id
+    TODO: move logic into method"""
     if id == g.user.id:
         try:
             user = User.query.get_or_404(g.user.id)
             disliked_users_ids = [u.id for u in user.disliking]
             liked_users_ids = [u.id for u in user.liking]
-            available_user = User.query.filter_by(
-                ~column("id").in_(
-                    liked_users_ids + disliked_users_ids
-                )
-            ).first()
-            # available_user = user.get_next_available_user()
 
-            return jsonify(user=available_user)
+            available_user = User.query.filter(
+                ~User.id.in_(liked_users_ids + disliked_users_ids)
+            ).first()
+
+            return jsonify(available_user)
         except Exception as e:
             return jsonify(errors=e), 404
+
 
 @app.get('/users/<int:id>/matches')
 @jwt_required()
@@ -141,15 +141,6 @@ def get_all_matches():
     matches = user.get_matches()
 
     return jsonify(matches=matches)
-
-
-# middleware to check if matching user id or admin
-
-# @app.get('/users/profile')
-# @jwt_required()
-# def curr_user_profile():
-#     """Gets current logged in user profile"""
-#     return jsonify(user=g.user.serialize())
 
 
 @app.patch('/users/<int:id>')
