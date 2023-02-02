@@ -5,16 +5,18 @@ import MatchList from "./Matches/MatchList"
 import Profile from "./Profile/Profile"
 import UserProfileEdit from "./UserProfileEdit/UserProfileEdit"
 import userContext from "./userContext";
+import AvailableUser from './Swipes/AvailableUser';
 import { useContext } from "react";
 import NotFound from "./NotFound";
 
-function RoutesList(){
+/** TODO: */
+function RoutesList({ login }){
   const { user } = useContext(userContext)
   return(
     <Routes>
       {!user &&
         <>
-          <Route path="/login" element={<Login/>}/>
+          <Route path="/login" element={<Login login={login}/>}/>
           <Route path="/signup" element={<Signup/>}/>
           <Route path="*" element={<Navigate to="/login"/>}/>
         </>
@@ -24,7 +26,7 @@ function RoutesList(){
           <Route path="/matches" element={<MatchList/>}/>
           <Route path="/edit-profile" element={<UserProfileEdit/>}/>
           <Route path="/users/:id" element={<Profile/>}/>
-          <Route path="/" element={<UserProfileEdit/>}/>
+          <Route path="/" element={<AvailableUser/>}/>
           <Route path="*" element={<NotFound/>}/>
         </>
       }

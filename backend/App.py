@@ -8,7 +8,7 @@ from flask import (
 from sqlalchemy.exc import IntegrityError
 
 from forms import (
-    UserAddForm, LoginForm, UploadImageForm
+    UserAddForm, LoginForm, UploadImageForm, UserUpdateForm
 )
 from models import (
     db, connect_db, User, Likes)
@@ -31,7 +31,6 @@ s3 = boto3.client('s3',
 )
 BUCKET_NAME = os.environ['BUCKET_NAME']
 BASE_AWS_URL = os.environ['BASE_AWS_URL']
-
 
 app = Flask(__name__)
 
@@ -118,23 +117,51 @@ def get_all_matches():
 
 # middleware to check if matching user id or admin
 
-@app.get('/users/profile')
-@jwt_required()
-def curr_user_profile():
-    """Gets current logged in user profile"""
-    return jsonify(user=g.user.serialize())
-
-
-# @app.patch('/upload')
+# @app.get('/users/profile')
 # @jwt_required()
+# def curr_user_profile():
+#     """Gets current logged in user profile"""
+#     return jsonify(user=g.user.serialize())
+
+
+@app.patch('/users/<int:id>')
+@jwt_required()
+def edit_profile(id):
+    '''Edit your own profile'''
+    if id == g.user.id:
+        data = request.get_json()
+        form = UserUpdateForm(data=data)
+
+        user = g.user
+
+        if form.validate_on_submit():
+            user.first_name = form.data.get('first_name')
+            user.last_name = form.data.get('last_name')
+            user.location = form.data.get('location')
+            user.radius = form.data.get('radius')
+            user.bio = form.data.get('bio')
+
+            db.session.add(user)
+            db.session.commit()
+
+            return jsonify(user=user.serialize())
+        else:
+            return jsonify(errors=form.errors)
+    else:
+        return jsonify(message='You cannot edit other profiles')
 
 @app.get('/users/<int:id>')
 @jwt_required()
 def user_profile(id):
     """Gets all user information associated with user id"""
-    user = User.query.get_or_404(id)
-
-    return jsonify(user=user.get_display_info())
+    if id == g.user.id:
+        return jsonify(user=g.user.serialize())
+    else:
+        try:
+            user = User.query.get_or_404(id)
+            return jsonify(user=user.get_display_info())
+        except Exception as e:
+            return jsonify(errors=e)
 
 @app.post('/users/like/<int:like_id>')
 @jwt_required()
