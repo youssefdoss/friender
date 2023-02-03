@@ -127,7 +127,7 @@ def available_user(id):
                 ~User.id.in_(liked_users_ids + disliked_users_ids)
             ).first()
 
-            return jsonify(available_user)
+            return jsonify(available_user.get_display_info())
         except Exception as e:
             return jsonify(errors=e), 404
 
@@ -165,7 +165,7 @@ def edit_profile(id):
 
             return jsonify(user=user.serialize())
         else:
-            return jsonify(errors=form.errors)
+            return jsonify(errors=form.errors), 400
     else:
         return jsonify(errors='You cannot edit other profiles'), 401
 

@@ -11,16 +11,16 @@ class UserAddForm(FlaskForm):
     firstName = StringField('First Name', validators=[DataRequired()])
     lastName = StringField('Last Name', validators=[DataRequired()])
     location = IntegerField('Location',validators=[DataRequired()])
+    radius = IntegerField('radius', validators=[DataRequired()])
 
 class UserUpdateForm(FlaskForm):
     """Form for updating a user."""
 
-    password = PasswordField('Password', validators=[Length(min=6)])
     firstName = StringField('First Name', validators=[DataRequired()])
     lastName = StringField('Last Name', validators=[DataRequired()])
     location = IntegerField('Location',validators=[DataRequired()])
-    radius = IntegerField('radius',validators=[DataRequired()])
-    bio = TextAreaField('bio',validators=[DataRequired()])
+    radius = IntegerField('radius', validators=[DataRequired()])
+    bio = TextAreaField('bio')
 
 class LoginForm(FlaskForm):
     """Login form."""
