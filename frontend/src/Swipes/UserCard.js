@@ -29,7 +29,9 @@ function UserCard({ user }) {
 
       {showBio && (
         <div className="UserCard-bio">
-          {user.bio === null || user.bio === "" ? "there's nothing to read here" : user.bio}
+          <div>
+            {user.bio === null || user.bio === "" ? "there's nothing to read here" : user.bio}
+          </div>
         </div>
       )}
       <div className="UserCard-info">

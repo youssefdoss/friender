@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 
-DEFAULT_IMAGE_URL = "https://st4.depositphotos.com/1000507/24488/v/600/depositphotos_244889634-stock-illustration-user-profile-picture-isolate-background.jpg"
+DEFAULT_IMAGE_URL = "https://r29-friender.s3.us-west-1.amazonaws.com/default.png"
 
 class Likes(db.Model):
     """Connection of a liker and a liked_user"""
