@@ -9,12 +9,13 @@ import "./UploadProfilePictureForm.scss";
 /** TODO: */
 
 function UploadProfilePictureForm({ uploadPicture }) {
-  const { user } = useContext(userContext);
-  const [selectedFile, setSelectedFile] = useState();
-  const [errors, setErrors] = useState({
+  const DEFAULT_ERRORS= {
     messages: [],
     type: "danger",
-  });
+  }
+  const { user } = useContext(userContext);
+  const [selectedFile, setSelectedFile] = useState();
+  const [alerts, setAlerts] = useState(DEFAULT_ERRORS);
 
   /** Updates selected file on change */
   function handleChange(evt) {
@@ -28,8 +29,13 @@ function UploadProfilePictureForm({ uploadPicture }) {
       const formData = new FormData();
       formData.append("file", selectedFile);
       await uploadPicture(formData);
+      setAlerts((prev) => ({
+        ...prev,
+        messages: ["Successfully updated picture!"],
+        type: "success"
+      }));
     } catch (err) {
-      setErrors((prev) => ({
+      setAlerts((prev) => ({
         ...prev,
         messages: err,
       }));
@@ -38,11 +44,12 @@ function UploadProfilePictureForm({ uploadPicture }) {
 
   return (
     <div className="UploadProfilePictureForm col-12 col-md-6">
-      <Card className="picture-preview">
+      {alerts.messages.length > 0 && <AlertContainer alerts={alerts} />}
+      <Card className="picture-preview mb-4">
         <img src={user.imageUrl} alt={`${user.firstName}`} />
       </Card>
       <Form onSubmit={handleSubmssion}>
-        <div className="input-group mt-4">
+        <div className="input-group">
           <Form.Control type="file" onChange={handleChange} />
           <div className="input-group-append">
             <button className="btn btn-primary" type="submit">
@@ -50,7 +57,6 @@ function UploadProfilePictureForm({ uploadPicture }) {
             </button>
           </div>
         </div>
-        {errors.messages.length > 0 && <AlertContainer alerts={errors} />}
       </Form>
     </div>
   );

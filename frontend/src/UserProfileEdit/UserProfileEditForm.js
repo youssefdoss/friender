@@ -39,7 +39,7 @@ function UserProfileEditForm({ editProfile }) {
       await editProfile(formData);
 
       setAlerts({
-        messages: ["Updated successfully"],
+        messages: ["Updated profile successfully"],
         type: "success",
       });
     } catch (err) {

@@ -13,7 +13,6 @@ function AvailableUser({
   availableUser,
   resetShowMatch }) {
   const [currentLike, setCurrentLike] = useState(null);
-  const [isShowingBio, setIsShowingBio] = useState(false);
 
   /** TODO: Checks for match and calls parent like function */
   async function handleLike() {
@@ -26,13 +25,12 @@ function AvailableUser({
     await dislike(availableUser.id);
   }
 
-  // return <h1>{user.firstName}</h1>
   return(
     <Container className="AvailableUser">
+      {showMatch && <MatchAlert match={currentLike} closeModal={resetShowMatch}/>}
       {availableUser ? (
         <div className="AvailableUser-wrapper">
           <UserCard user={availableUser} />
-          {showMatch && <MatchAlert match={currentLike} closeModal={resetShowMatch}/>}
           <div className="UserCard-actions">
             <button onClick={handleDislike}><EmojiFrown size={30} /></button>
             <button onClick={handleLike}><EmojiLaughing size={30} /></button>
