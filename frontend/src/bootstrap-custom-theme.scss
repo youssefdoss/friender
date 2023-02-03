@@ -1,0 +1,126 @@
+@import "https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;800&display=swap";
+
+:root {
+  --background: #1a1823;
+  --primary: #7b58ed;
+  --primary--dark: #583abd;
+  --primary-muted: #7b58ed6d;
+  --container-color: #282431;
+  --input-color: #312c3b;
+  --input-color--focused: #484353;
+  --font-light: #fff;
+  --font-dark: #000;
+  --border-light: rgba(255, 255, 255, 0.1);
+  --rounded: 10px;
+  --danger-color: #C92020;
+  --success-color: #37C920;
+}
+
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: var(--font-light) !important;
+  opacity: 0.6 !important
+    /* Firefox */
+}
+
+html {
+  height: 100%;
+}
+
+.App {
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  background-color: var(--background);
+  color: var(--font-light);
+  font-family: "Poppins", Arial, Helvetica, sans-serif;
+  height: 100%;
+}
+
+a {
+  color: var(--primary);
+
+  &:hover {
+    color: var(--primary--dark);
+  }
+}
+
+.container-fluid {
+  padding: 0 2rem;
+  margin: 0;
+}
+
+
+
+.card {
+  background-color: var(--container-color);
+  border-radius: var(--rounded);
+  padding: 2rem;
+}
+
+form {
+  .form-control {
+    color: var(--font-light);
+    border-radius: var(--rounded);
+    background-color: var(--input-color);
+    border-color: transparent;
+    padding: 0.75em;
+
+    &:focus {
+      color: var(--font-light);
+      background-color: var(--input-color--focused);
+      border-color: transparent;
+      outline: 0;
+      box-shadow: none;
+    }
+  }
+
+  button[type="submit"] {
+    width: 100%;
+  }
+}
+
+.btn {
+  &.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    border-radius: var(--rounded);
+  }
+
+  &:focus-visible {
+    box-shadow: var(--primary--dark);
+    background-color: var(--primary--dark);
+    border-color: var(--primary--dark);
+  }
+}
+
+:not(.btn-check)+.btn:active {
+  background-color: var(--primary--dark);
+  border-color: var(--primary--dark);
+}
+
+.alert {
+  background-color: transparent;
+  color: var(--font-light);
+  border-radius: var(--rounded);
+  &.alert-danger {
+    border: 2px solid var(--danger-color);
+  }
+  &.alert-success {
+    border: 2px solid var(--success-color);
+  }
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.8rem;
+    text-transform: capitalize;
+  }
+}

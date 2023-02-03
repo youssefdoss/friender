@@ -11,12 +11,13 @@ import Alert from "react-bootstrap/Alert";
 function AlertContainer({ alerts }) {
   return (
     <>
-      {alerts.messages.map((message) => (
-        <Alert className="my-3" key={message} variant={alerts.type}>
-          {message}
-        </Alert>
-        )
-      )}
+      <Alert className="mb-3" variant={alerts.type}>
+        <ul>
+          {alerts.messages.map((message) => (
+            <li key={message}>{message}</li>
+          ))}
+        </ul>
+      </Alert>
     </>
   );
 }

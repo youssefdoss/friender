@@ -1,6 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import { useState, useEffect } from "react";
 import NavBar from "./NavBar/NavBar";
+import Loader from "./Loader";
 import RoutesList from "./RoutesList";
 import userContext from "./userContext";
 import FrienderApi from "./api";
@@ -111,7 +112,7 @@ function App() {
   }
 
 
-  if(user.isLoading) return <h1>loading...</h1>
+  if(user.isLoading) return <Loader/>
 
   /** Edits a user's profile information and updates across app
    *

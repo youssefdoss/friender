@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import { Link } from "react-router-dom";
+import "./auth.scss";
+import logo from "../assets/friender-logo.svg";
 
 /***
  * TODO:
@@ -44,72 +46,73 @@ function Signup({ signup }) {
     }
   }
   return (
-    <div className="mt-3 row d-flex justify-content-center">
-      <div className="col-10 col-sm-8 col-md-6">
-        <Card className="p-3">
-          <h1 className="text-center">Sign Up</h1>
+    <div className="Signup auth">
+      <div className="col-10 col-sm-8 col-md-6 col-lg-3">
+        <img src={logo} className="logo mb-3" alt="friender logo"/>
+        <h2 className="title pb-2">sign up for friender</h2>
+        {errors.messages.length > 0 && <AlertContainer alerts={errors} />}
+        <Card>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label htmlFor="email">Email</Form.Label>
               <Form.Control
                 type="text"
                 value={formData.email}
                 onChange={handleChange}
                 name="email"
+                placeholder="email"
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label htmlFor="password">Password</Form.Label>
               <Form.Control
                 type="password"
                 value={formData.password}
                 onChange={handleChange}
                 name="password"
+                placeholder="password"
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label htmlFor="email">First Name</Form.Label>
               <Form.Control
                 type="text"
                 value={formData.firstName}
                 onChange={handleChange}
                 name="firstName"
+                placeholder="first name"
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label htmlFor="email">Last Name</Form.Label>
               <Form.Control
                 type="text"
                 value={formData.lastName}
                 onChange={handleChange}
                 name="lastName"
+                placeholder="last name"
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label htmlFor="email">Location (Zip Code)</Form.Label>
               <Form.Control
                 type="text"
                 value={formData.location}
                 onChange={handleChange}
                 name="location"
+                placeholder="location (zip code)"
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label htmlFor="radius">Radius (miles)</Form.Label>
               <Form.Control
                 type="number"
                 value={formData.radius}
                 onChange={handleChange}
                 name="radius"
+                placeholder="radius (miles)"
               />
             </Form.Group>
-            {errors.messages.length > 0 && <AlertContainer alerts={errors} />}
             <Button variant="primary" type="submit">
-              Submit
+              Sign Up
             </Button>
           </Form>
         </Card>
-        <p>Already have an account? <Link to="/login">Login</Link>.</p>
+        <p className="mt-4">Already have an account? <Link to="/login">Login</Link>.</p>
       </div>
     </div>
   );

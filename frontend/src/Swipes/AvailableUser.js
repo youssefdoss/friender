@@ -1,5 +1,8 @@
 import { useState, useContext } from "react";
+import { Container } from "react-bootstrap";
 import userContext from "../userContext";
+import UserCard from "./UserCard"
+
 /** TODO: */
 function AvailableUser({ getNextAvailableUser, like, dislike }) {
   const { user } = useContext(userContext);
@@ -16,7 +19,12 @@ function AvailableUser({ getNextAvailableUser, like, dislike }) {
 
   }
 
-  return <h1>{user.firstName}</h1>
+  // return <h1>{user.firstName}</h1>
+  return(
+    <Container>
+      <UserCard/>
+    </Container>
+  )
 }
 
 export default AvailableUser;

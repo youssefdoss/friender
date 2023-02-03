@@ -1,0 +1,26 @@
+.UploadProfilePictureForm {
+  .card {
+    &.picture-preview {
+      padding: 0;
+      height: calc(100% - 70px);
+
+      img {
+        object-fit: cover;
+        height: 100%;
+        border-radius: 15px;
+      }
+    }
+  }
+
+  .form-control {
+    padding: 5px 10px;
+  }
+
+  .input-group-append {
+    .btn {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+
+    }
+  }
+}

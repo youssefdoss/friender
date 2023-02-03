@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import { Link } from "react-router-dom";
+import "./auth.scss";
+import logo from "../assets/friender-logo.svg";
 
 /** TODO: */
 function Login({ login }){
@@ -40,36 +42,37 @@ function Login({ login }){
   }
 
   return (
-    <div className="mt-3 row d-flex justify-content-center">
-      <div className="col-10 col-sm-8 col-md-6">
-        <Card className="p-3">
-          <h1 className="text-center">Login</h1>
+    <div className="auth">
+      <div className="col-10 col-sm-8 col-md-6 col-lg-3">
+      <img src={logo} className="logo mb-3" alt="friender logo"/>
+        <h2 className="title pb-2">login to friender</h2>
+        {errors.messages.length > 0 && <AlertContainer alerts={errors} />}
+        <Card>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label htmlFor="email">Email</Form.Label>
               <Form.Control
                 type="text"
                 value={formData.email}
+                placeholder="email"
                 onChange={handleChange}
                 name="email"
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label htmlFor="password">Password</Form.Label>
               <Form.Control
                 type="password"
                 value={formData.password}
+                placeholder="password"
                 onChange={handleChange}
                 name="password"
               />
             </Form.Group>
-            {errors.messages.length > 0 && <AlertContainer alerts={errors} />}
             <Button variant="primary" type="submit">
-              Submit
+              Login
             </Button>
           </Form>
         </Card>
-        <p>Don't have an account? <Link to="/signup">Sign up</Link>.</p>
+        <p className="mt-4">Don't have an account? <Link to="/signup">Sign up</Link>.</p>
       </div>
     </div>
   );
