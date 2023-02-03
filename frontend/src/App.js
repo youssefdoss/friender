@@ -7,10 +7,12 @@ import FrienderApi from "./api";
 import decode from "jwt-decode";
 
 function App() {
-  const [user, setUser] = useState({
+  const initialUser = {
     data: null,
+    availableUser: null,
     isLoading: true,
-  });
+  }
+  const [user, setUser] = useState(initialUser);
   const [token, setToken] = useState(localStorage.getItem('token'));
 
   useEffect(function updateLocalStorage() {
@@ -28,9 +30,12 @@ function App() {
           const { sub } = decode(token);
           FrienderApi.token = token;
           const user = await FrienderApi.getUser(sub);
+          // const matches =
+          const availableUser = await FrienderApi.getAvailableUser(user.id)
           setUser({
             data: user,
             isLoading: false,
+            availableUser: availableUser
           });
         } catch (err) {
           resetUser();
@@ -45,7 +50,7 @@ function App() {
   /** Resets user to an initial state */
   function resetUser() {
     setUser({
-      data: null,
+      ...initialUser,
       isLoading: false,
     });
   }
@@ -73,6 +78,27 @@ function App() {
     setToken(token);
   }
 
+  /** Edit user info
+   *
+   * data: {email, firstName, lastName, location, bio, radius}
+   */
+  async function editProfile(data) {
+    const newUserData = await FrienderApi.editProfile(data, user.data.id)
+    setUser((prev) => ({
+      ...prev,
+      data: newUserData,
+      isLoading: false
+    })
+    )
+  }
+
+  // /**
+  //  * Get next available user
+  //  */
+  // async function getAvailableUser() {
+  //   const availableUser = await FrienderApi.getAvailableUser(user.data.id)
+  // }
+
   /** Uploads picture to s3 and saves url in db
    *
    * data: FormData (file data)
@@ -98,6 +124,7 @@ function App() {
 
   return (
     <div className="App">
+      {console.log(user)}
       <userContext.Provider value={{ user: user.data }} >
         <BrowserRouter>
           {user.data &&
@@ -107,6 +134,7 @@ function App() {
             login={login}
             signup={signup}
             uploadPicture={uploadPicture}
+            editProfile={editProfile}
           />
         </BrowserRouter>
       </userContext.Provider>

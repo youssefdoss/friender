@@ -24,6 +24,8 @@ class FrienderApi {
     if (endpoint === "upload") {
       headers["Content-Type"] = "multipart/form-data";
     }
+
+    console.log('headers',headers);
     const params = method === "get" ? data : {};
     try {
       const result = await axios({ url, method, data, params, headers });
@@ -79,7 +81,7 @@ class FrienderApi {
    * returns: string - token
    */
 
-  static async edit(data, id) {
+  static async editProfile(data, id) {
     let res = await this.request(`users/${id}`, data, "patch");
     return res.user;
   }
@@ -94,6 +96,12 @@ class FrienderApi {
   static async getUser(id) {
     let res = await this.request(`users/${id}`);
     return res.user;
+  }
+
+  /** Gets next available user for swiping */
+  static async getAvailableUser(id){
+    let res = await this.request(`users/${id}/available-user`);
+    return res
   }
 
   /** Like a user

@@ -10,7 +10,7 @@ import { useContext } from "react";
 import NotFound from "./NotFound";
 
 /** TODO: */
-function RoutesList({ login, signup, uploadPicture }){
+function RoutesList({ login, signup, editProfile, uploadPicture }){
   const { user } = useContext(userContext)
   return(
     <Routes>
@@ -26,6 +26,7 @@ function RoutesList({ login, signup, uploadPicture }){
           <Route path="/matches" element={<MatchList/>}/>
           <Route path="/edit-profile" element={
             <UserProfileEdit
+              editProfile={editProfile}
               uploadPicture={uploadPicture}
             />
           }/>

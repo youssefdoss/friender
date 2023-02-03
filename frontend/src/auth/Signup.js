@@ -86,12 +86,21 @@ function Signup({ signup }) {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label htmlFor="email">Location</Form.Label>
+              <Form.Label htmlFor="email">Location (Zip Code)</Form.Label>
               <Form.Control
                 type="text"
                 value={formData.location}
                 onChange={handleChange}
                 name="location"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label htmlFor="radius">Radius (miles)</Form.Label>
+              <Form.Control
+                type="number"
+                value={formData.radius}
+                onChange={handleChange}
+                name="radius"
               />
             </Form.Group>
             {errors.messages.length > 0 && <AlertContainer alerts={errors} />}
