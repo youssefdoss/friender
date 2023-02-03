@@ -25,7 +25,6 @@ class FrienderApi {
       headers["Content-Type"] = "multipart/form-data";
     }
 
-    console.log('headers',headers);
     const params = method === "get" ? data : {};
     try {
       const result = await axios({ url, method, data, params, headers });
@@ -33,7 +32,6 @@ class FrienderApi {
 
     } catch (err) {
       console.error("API Error:", err.response);
-      console.log(err);
       let message = err.response.data.errors;
 
       if (typeof message === 'object' && !Array.isArray(message)) {

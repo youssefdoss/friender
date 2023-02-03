@@ -190,9 +190,11 @@ class User(db.Model):
         liked_by_user_ids = set([user.id for user in self.likers])
         matches = list(liked_by_user_ids.intersection(liked_user_ids))
 
-        matches = [self.serialize_display(match) for match in matches]
-
         return matches
+
+    # def get_user(cls, id):
+    #     '''Gets user by id'''
+    #     return cls.query.get(id)
 
     def serialize_display(self, match):
         """Serialize other user object"""

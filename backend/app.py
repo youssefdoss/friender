@@ -124,8 +124,11 @@ def available_user(id):
             liked_users_ids = [u.id for u in user.liking]
 
             available_user = User.query.filter(
-                ~User.id.in_(liked_users_ids + disliked_users_ids)
+                ~User.id.in_(liked_users_ids + disliked_users_ids + [user.id])
             ).first()
+
+            if available_user == None:
+                return jsonify(available_user)
 
             return jsonify(available_user.get_display_info())
         except Exception as e:
@@ -134,11 +137,13 @@ def available_user(id):
 
 @app.get('/users/<int:id>/matches')
 @jwt_required()
-def get_all_matches():
+def get_all_matches(id):
     """Gets all matches associated with user id"""
-    current_user = get_current_user()
+    # current_user = get_current_user()
     user = User.query.get_or_404(id)
-    matches = user.get_matches()
+    matches_ids = user.get_matches()
+    matches = [User.query.get(id).get_display_info() for id in matches_ids]
+    breakpoint()
 
     return jsonify(matches=matches)
 

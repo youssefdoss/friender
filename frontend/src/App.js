@@ -15,6 +15,7 @@ function App() {
   }
   const [user, setUser] = useState(initialUser);
   const [token, setToken] = useState(localStorage.getItem('token'));
+  const [showMatch, setShowMatch] = useState(false);
 
   useEffect(function updateLocalStorage() {
     if (token) {
@@ -93,6 +94,40 @@ function App() {
     )
   }
 
+  /** Likes a user and gets the next available user
+   *
+   * id: id of the user being liked
+   */
+  async function like(id) {
+    const res = await FrienderApi.likeUser(id);
+    if (res.message === 'match') {
+      setShowMatch(true)
+    }
+    const nextAvailableUser = await FrienderApi.getAvailableUser(user.data.id);
+    setUser((prev) => ({
+      ...prev,
+      availableUser: nextAvailableUser,
+    }));
+  }
+
+  /** Resets show match to false */
+  function resetShowMatch() {
+    setShowMatch(false);
+  }
+
+  /** Disikes a user and gets the next available user
+   *
+   * id: id of the user being disliked
+   */
+  async function dislike(id) {
+    await FrienderApi.dislikeUser(id);
+    const nextAvailableUser = await FrienderApi.getAvailableUser(user.data.id);
+    setUser((prev) => ({
+      ...prev,
+      availableUser: nextAvailableUser,
+    }));
+  }
+
   // /**
   //  * Get next available user
   //  */
@@ -121,7 +156,6 @@ function App() {
 
   return (
     <div className="App">
-      {console.log(user)}
       <userContext.Provider value={{ user: user.data }} >
         <BrowserRouter>
           {user.data &&
@@ -132,6 +166,11 @@ function App() {
             signup={signup}
             uploadPicture={uploadPicture}
             editProfile={editProfile}
+            like={like}
+            dislike={dislike}
+            showMatch={showMatch}
+            availableUser={user.availableUser}
+            resetShowMatch={resetShowMatch}
           />
         </BrowserRouter>
       </userContext.Provider>
