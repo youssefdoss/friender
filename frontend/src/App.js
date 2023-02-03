@@ -11,43 +11,51 @@ function App() {
   const initialUser = {
     data: null,
     availableUser: null,
+    matches: null,
     isLoading: true,
-  }
+  };
   const [user, setUser] = useState(initialUser);
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const [showMatch, setShowMatch] = useState(false);
 
-  useEffect(function updateLocalStorage() {
-    if (token) {
-      localStorage.setItem('token', token);
-    } else {
-      localStorage.removeItem('token');
-    }
-  }, [token])
-
-  useEffect(function fetchUserWhenMounted() {
-    async function fetchUser() {
+  useEffect(
+    function updateLocalStorage() {
       if (token) {
-        try {
-          const { sub } = decode(token);
-          FrienderApi.token = token;
-          const user = await FrienderApi.getUser(sub);
-          // const matches =
-          const availableUser = await FrienderApi.getAvailableUser(user.id)
-          setUser({
-            data: user,
-            isLoading: false,
-            availableUser: availableUser
-          });
-        } catch (err) {
+        localStorage.setItem("token", token);
+      } else {
+        localStorage.removeItem("token");
+      }
+    },
+    [token]
+  );
+
+  useEffect(
+    function fetchUserWhenMounted() {
+      async function fetchUser() {
+        if (token) {
+          try {
+            const { sub } = decode(token);
+            FrienderApi.token = token;
+            const user = await FrienderApi.getUser(sub);
+            const matches = await FrienderApi.getMatches(user.id);
+            const availableUser = await FrienderApi.getAvailableUser(user.id);
+            setUser({
+              data: user,
+              isLoading: false,
+              availableUser: availableUser,
+              matches: matches
+            });
+          } catch (err) {
+            resetUser();
+          }
+        } else {
           resetUser();
         }
-      } else {
-        resetUser();
       }
-    }
-    fetchUser();
-  }, [token]);
+      fetchUser();
+    },
+    [token]
+  );
 
   /** Resets user to an initial state */
   function resetUser() {
@@ -67,7 +75,7 @@ function App() {
    * data: {email, password}
    */
   async function login(data) {
-    const token = await FrienderApi.login(data)
+    const token = await FrienderApi.login(data);
     setToken(token);
   }
 
@@ -76,7 +84,7 @@ function App() {
    * data: {email, password, firstName, lastName, location}
    */
   async function signup(data) {
-    const token = await FrienderApi.signup(data)
+    const token = await FrienderApi.signup(data);
     setToken(token);
   }
 
@@ -85,13 +93,12 @@ function App() {
    * data: {email, firstName, lastName, location, bio, radius}
    */
   async function editProfile(data) {
-    const newUserData = await FrienderApi.editProfile(data, user.data.id)
+    const newUserData = await FrienderApi.editProfile(data, user.data.id);
     setUser((prev) => ({
       ...prev,
       data: newUserData,
-      isLoading: false
-    })
-    )
+      isLoading: false,
+    }));
   }
 
   /** Likes a user and gets the next available user
@@ -100,8 +107,8 @@ function App() {
    */
   async function like(id) {
     const res = await FrienderApi.likeUser(id);
-    if (res.message === 'match') {
-      setShowMatch(true)
+    if (res.message === "match") {
+      setShowMatch(true);
     }
     const nextAvailableUser = await FrienderApi.getAvailableUser(user.data.id);
     setUser((prev) => ({
@@ -142,12 +149,11 @@ function App() {
   async function uploadPicture(data) {
     await FrienderApi.uploadImage(data);
     setUser((prev) => ({
-      ...prev
+      ...prev,
     }));
   }
 
-
-  if(user.isLoading) return <Loader/>
+  if (user.isLoading) return <Loader />;
 
   /** Edits a user's profile information and updates across app
    *
@@ -156,11 +162,9 @@ function App() {
 
   return (
     <div className="App">
-      <userContext.Provider value={{ user: user.data }} >
+      <userContext.Provider value={{ user: user.data }}>
         <BrowserRouter>
-          {user.data &&
-            <NavBar logout={logout} />
-          }
+          {user.data && <NavBar logout={logout} />}
           <RoutesList
             login={login}
             signup={signup}
@@ -171,6 +175,7 @@ function App() {
             showMatch={showMatch}
             availableUser={user.availableUser}
             resetShowMatch={resetShowMatch}
+            matches={user.matches}
           />
         </BrowserRouter>
       </userContext.Provider>

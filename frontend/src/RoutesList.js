@@ -20,6 +20,7 @@ function RoutesList({
   showMatch,
   availableUser,
   resetShowMatch,
+  matches
 }) {
   const { user } = useContext(userContext)
   return(
@@ -33,14 +34,14 @@ function RoutesList({
       }
       {user &&
         <>
-          <Route path="/matches" element={<MatchList/>}/>
+          <Route path="/matches" element={<MatchList matches={matches}/>}/>
+          <Route path="/profile/:id" element={<Profile matches={matches}/>}/>
           <Route path="/edit-profile" element={
             <UserProfileEdit
               editProfile={editProfile}
               uploadPicture={uploadPicture}
             />
           }/>
-          <Route path="/users/:id" element={<Profile/>}/>
           <Route path="/" element={
             <AvailableUser
               like={like}

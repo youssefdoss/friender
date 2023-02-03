@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Container } from "react-bootstrap";
 import UserCard from "./UserCard"
 import { EmojiFrown, EmojiLaughing } from "react-bootstrap-icons";
+import "./AvailableUser.scss"
+import MatchAlert from "./MatchAlert";
 
 /** TODO: */
 function AvailableUser({
@@ -10,10 +12,12 @@ function AvailableUser({
   showMatch,
   availableUser,
   resetShowMatch }) {
+  const [currentLike, setCurrentLike] = useState(null);
   const [isShowingBio, setIsShowingBio] = useState(false);
 
   /** TODO: Checks for match and calls parent like function */
   async function handleLike() {
+    setCurrentLike(availableUser);
     await like(availableUser.id);
   }
 
@@ -24,17 +28,17 @@ function AvailableUser({
 
   // return <h1>{user.firstName}</h1>
   return(
-    <Container>
+    <Container className="AvailableUser">
       {console.log(availableUser)}
       {availableUser ? (
-        <>
+        <div className="AvailableUser-wrapper">
           <UserCard user={availableUser} />
-          {showMatch && <><p>Match!</p><button onClick={resetShowMatch}>X</button></>}
+          {showMatch && <MatchAlert match={currentLike} closeModal={resetShowMatch}/>}
           <div className="UserCard-actions">
             <button onClick={handleDislike}><EmojiFrown size={30} /></button>
             <button onClick={handleLike}><EmojiLaughing size={30} /></button>
           </div>
-        </>
+        </div>
       ) : (
         <h1>No one left to see!</h1>
       )}

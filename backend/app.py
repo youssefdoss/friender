@@ -143,7 +143,6 @@ def get_all_matches(id):
     user = User.query.get_or_404(id)
     matches_ids = user.get_matches()
     matches = [User.query.get(id).get_display_info() for id in matches_ids]
-    breakpoint()
 
     return jsonify(matches=matches)
 
@@ -218,8 +217,10 @@ def dislike(dislike_id):
 def upload():
     '''Upload image to s3'''
     form = UploadImageForm()
+    print(form)
     if form.validate_on_submit():
         img = request.files.get('file', None)
+        print(img)
         if img:
             filename_raw = secure_filename(img.filename)
             _, file_extension = os.path.splitext(filename_raw)

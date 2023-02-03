@@ -16,10 +16,10 @@ class FrienderApi {
       "Content-Type": `application/json`,
     };
 
-    if(endpoint=== "login" || endpoint === "signup") {
+    if (endpoint === "login" || endpoint === "signup") {
       headers = {
-        "Content-Type": `application/json`
-      }
+        "Content-Type": `application/json`,
+      };
     }
     if (endpoint === "upload") {
       headers["Content-Type"] = "multipart/form-data";
@@ -29,12 +29,11 @@ class FrienderApi {
     try {
       const result = await axios({ url, method, data, params, headers });
       return result.data;
-
     } catch (err) {
       console.error("API Error:", err.response);
       let message = err.response.data.errors;
 
-      if (typeof message === 'object' && !Array.isArray(message)) {
+      if (typeof message === "object" && !Array.isArray(message)) {
         let updatedMessage = [];
         for (let key in message) {
           updatedMessage.push(`${key}: ${message[key]}`);
@@ -97,9 +96,9 @@ class FrienderApi {
   }
 
   /** Gets next available user for swiping */
-  static async getAvailableUser(id){
+  static async getAvailableUser(id) {
     let res = await this.request(`users/${id}/available-user`);
-    return res
+    return res;
   }
 
   /** Like a user
@@ -135,7 +134,7 @@ class FrienderApi {
 
   static async getMatches(id) {
     let res = await this.request(`users/${id}/matches`);
-    return res.matches;
+    return res.matches
   }
 
   /** Upload image

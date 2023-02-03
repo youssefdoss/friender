@@ -30,7 +30,7 @@ function NavBar({ logout }) {
               Get Matching
             </NavLink>
             <NavLink className="nav-link" to="/matches">
-              MyMatches
+              My Matches
             </NavLink>
             <NavLink className="nav-link" to="/edit-profile">
               Profile

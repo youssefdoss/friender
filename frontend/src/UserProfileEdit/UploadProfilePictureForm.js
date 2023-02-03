@@ -22,7 +22,8 @@ function UploadProfilePictureForm({ uploadPicture }) {
   }
 
   /** Handles form submission and calls parent upload function */
-  async function handleSubmssion() {
+  async function handleSubmssion(evt) {
+    evt.preventDefault();
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);

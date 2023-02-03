@@ -12,7 +12,7 @@ function UserCard({ user }) {
         src={user.imageUrl}
         alt={`${user.firstName} Profile`}
       />
-      {/* <div class="UserCard-bio">
+      {/* <div className="UserCard-bio">
         "Looking to make cool friends!"
       </div> */}
       <div className="UserCard-info">
