@@ -104,13 +104,9 @@ function App() {
    * data: FormData (file data)
    */
   async function uploadPicture(data) {
-    const res = await FrienderApi.uploadImage(data);
+    await FrienderApi.uploadImage(data);
     setUser((prev) => ({
-      ...prev,
-      data: {
-        ...data,
-        imageUrl: res
-      }
+      ...prev
     }));
   }
 

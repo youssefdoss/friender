@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import userContext from '../userContext';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import AlertContainer from '../AlertContainer';
@@ -6,6 +7,7 @@ import AlertContainer from '../AlertContainer';
 /** TODO: */
 
 function UploadProfilePictureForm({ uploadPicture }) {
+  const { user } = useContext(userContext);
   const [selectedFile, setSelectedFile] = useState();
   const [errors, setErrors] = useState({
     messages: [],
@@ -32,14 +34,19 @@ function UploadProfilePictureForm({ uploadPicture }) {
   }
 
   return (
-    <Form>
-      <Form.Group className="mb-3">
-        <Form.Label>Upload Profile Picture</Form.Label>
-        <Form.Control type="file" onChange={handleChange} />
-      </Form.Group>
-      {errors.messages.length > 0 && <AlertContainer alerts={errors} />}
-      <Button onClick={handleSubmssion}>Upload Picture</Button>
-    </Form>
+    <div className="mt-3 row d-flex justify-content-center">
+      <div className="col-10 col-sm-8 col-md-6">
+        <img src={user.imageUrl} alt={`${user.firstName}`} />
+        <Form>
+          <Form.Group className="mb-3">
+            <Form.Label>Upload Profile Picture</Form.Label>
+            <Form.Control type="file" onChange={handleChange} />
+          </Form.Group>
+          {errors.messages.length > 0 && <AlertContainer alerts={errors} />}
+          <Button onClick={handleSubmssion}>Upload Picture</Button>
+        </Form>
+      </div>
+    </div>
   )
 }
 
