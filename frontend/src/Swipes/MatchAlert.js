@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { XCircle } from "react-bootstrap-icons";
 import "./MatchAlert.scss"
+import logo from "../assets/friender-logo.svg";
+
 /**
  * MatchAlert
  * TODO:
@@ -8,9 +10,12 @@ import "./MatchAlert.scss"
 function MatchAlert({ match, viewProfile, closeModal }) {
   return (
     <div className="MatchAlert">
-      <button onClick={closeModal} className="btn btn-primary btn-exit"><XCircle/></button>
+      <img src={logo} alt="friender logo"/>
       <p>You've matched with {match.firstName}!</p>
-      <Link to={`/profile/${match.id}`} className="btn btn-primary">Go to profile</Link>
+      <div>
+        <Link to={`/profile/${match.id}`} className="btn btn-sm btn-primary me-2">Go to profile</Link>
+        <button onClick={closeModal} className="btn btn-sm btn-outline-primary">Continue swiping</button>
+      </div>
     </div>
   );
 }

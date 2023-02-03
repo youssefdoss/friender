@@ -93,8 +93,24 @@ form {
     border-radius: var(--rounded);
   }
 
+  &.btn-outline-primary {
+    color: var(--font-light);
+
+    border-color: var(--primary);
+    border-radius: var(--rounded);
+
+    &:hover {
+      background-color: var(--primary);
+    }
+  }
+
   &:focus-visible {
     box-shadow: var(--primary--dark);
+    background-color: var(--primary--dark);
+    border-color: var(--primary--dark);
+  }
+  &:first-child:active {
+
     background-color: var(--primary--dark);
     border-color: var(--primary--dark);
   }

@@ -39,7 +39,7 @@ function AvailableUser({
           </div>
         </div>
       ) : (
-        <h1>No one left to see!</h1>
+        <h1>No one left to see! Come back later!</h1>
       )}
     </Container>
   )

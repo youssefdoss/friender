@@ -38,8 +38,6 @@ function UploadProfilePictureForm({ uploadPicture }) {
 
   return (
     <div className="UploadProfilePictureForm col-12 col-md-6">
-      {console.log('it re rendered')}
-      {console.log(user.imageUrl)}
       <Card className="picture-preview">
         <img src={user.imageUrl} alt={`${user.firstName}`} />
       </Card>

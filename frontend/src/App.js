@@ -135,12 +135,6 @@ function App() {
     }));
   }
 
-  // /**
-  //  * Get next available user
-  //  */
-  // async function getAvailableUser() {
-  //   const availableUser = await FrienderApi.getAvailableUser(user.data.id)
-  // }
 
   /** Uploads picture to s3 and saves url in db
    *
@@ -148,7 +142,6 @@ function App() {
    */
   async function uploadPicture(data) {
     const res = await FrienderApi.uploadImage(data);
-    console.log(res.imageUrl);
     setUser((prev) => ({
       ...prev,
       data: {
@@ -156,7 +149,6 @@ function App() {
         imageUrl: res.imageUrl
       }
     }));
-    console.log('ran setUser')
   }
 
   if (user.isLoading) return <Loader />;

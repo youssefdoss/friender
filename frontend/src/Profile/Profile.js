@@ -5,7 +5,6 @@ import UserCard from "../Swipes/UserCard"
  * TODO:
  */
 function Profile({matches}) {
-  console.log('matches',matches);
   const { id } = useParams()
 
   const match = matches.filter(match => +id === match.id)[0]
