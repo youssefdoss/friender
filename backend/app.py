@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
+import pgeocode
 
 from flask import (
     Flask, request, jsonify, g
@@ -101,6 +102,7 @@ def signup():
                 first_name=form.data["firstName"],
                 last_name=form.data["lastName"],
                 location=form.data["location"],
+                radius=form.data["radius"],
             )
             db.session.commit()
             access_token = create_access_token(identity=user.id)
@@ -120,11 +122,22 @@ def available_user(id):
     if id == g.user.id:
         try:
             user = User.query.get_or_404(g.user.id)
-            disliked_users_ids = [u.id for u in user.disliking]
-            liked_users_ids = [u.id for u in user.liking]
+            all_users = User.query.all()
+            disliked_users_ids = set([u.id for u in user.disliking])
+            liked_users_ids = set([u.id for u in user.liking])
+            dist = pgeocode.GeoDistance('us')
+            in_range_ids = set([
+                u.id
+                for u
+                in all_users
+                if
+                    dist.query_postal_code(str(u.location), str(user.location)) < user.radius
+                    and dist.query_postal_code(str(u.location), str(user.location)) < u.radius
+            ])
 
             available_user = User.query.filter(
-                ~User.id.in_(liked_users_ids + disliked_users_ids + [user.id])
+                ~User.id.in_(liked_users_ids.union(disliked_users_ids, set([user.id]))),
+                User.id.in_(in_range_ids)
             ).first()
 
             if available_user == None:

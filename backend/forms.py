@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField, IntegerField, FileField
-from wtforms.validators import DataRequired, Email, Length, InputRequired
+from wtforms.validators import DataRequired, Email, Length, NumberRange
 from flask_wtf.file import FileRequired
 
 class UserAddForm(FlaskForm):
@@ -18,7 +18,7 @@ class UserUpdateForm(FlaskForm):
 
     firstName = StringField('First Name', validators=[DataRequired()])
     lastName = StringField('Last Name', validators=[DataRequired()])
-    location = IntegerField('Location',validators=[DataRequired()])
+    location = IntegerField('Location',validators=[DataRequired(), NumberRange(min=10000, max=99999)])
     radius = IntegerField('radius', validators=[DataRequired()])
     bio = TextAreaField('bio')
 

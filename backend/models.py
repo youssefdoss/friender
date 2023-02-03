@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 
-DEFAULT_IMAGE_URL = "/static/images/default-pic.png"
+DEFAULT_IMAGE_URL = "https://st4.depositphotos.com/1000507/24488/v/600/depositphotos_244889634-stock-illustration-user-profile-picture-isolate-background.jpg"
 
 class Likes(db.Model):
     """Connection of a liker and a liked_user"""
@@ -84,6 +84,7 @@ class User(db.Model):
 
     radius = db.Column(
         db.Integer,
+        default=10000
     )
 
     password = db.Column(
@@ -110,7 +111,7 @@ class User(db.Model):
         return f"<User #{self.id}: {self.first_name} {self.last_name} {self.email}>"
 
     @classmethod
-    def signup(cls, email, first_name, last_name, location, password, bio=None, image_url=DEFAULT_IMAGE_URL):
+    def signup(cls, email, first_name, last_name, location, password, radius, bio=None, image_url=DEFAULT_IMAGE_URL):
         """Sign up user.
 
         Hashes password and adds user to system.
@@ -123,6 +124,7 @@ class User(db.Model):
             first_name=first_name,
             last_name=last_name,
             location=location,
+            radius=radius,
             bio=bio,
             password=hashed_pwd,
             image_url=image_url,

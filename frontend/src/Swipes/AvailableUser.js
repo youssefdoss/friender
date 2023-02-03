@@ -29,7 +29,6 @@ function AvailableUser({
   // return <h1>{user.firstName}</h1>
   return(
     <Container className="AvailableUser">
-      {console.log(availableUser)}
       {availableUser ? (
         <div className="AvailableUser-wrapper">
           <UserCard user={availableUser} />

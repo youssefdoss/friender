@@ -17,6 +17,7 @@ function Signup({ signup }) {
     firstName: "",
     lastName: "",
     location: "",
+    radius: "",
   });
 
   const [errors, setErrors] = useState({
@@ -100,7 +101,7 @@ function Signup({ signup }) {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Control
-                type="number"
+                type="text"
                 value={formData.radius}
                 onChange={handleChange}
                 name="radius"
