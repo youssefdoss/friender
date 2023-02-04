@@ -5,7 +5,21 @@ import { EmojiFrown, EmojiLaughing } from "react-bootstrap-icons";
 import "./AvailableUser.scss"
 import MatchAlert from "./MatchAlert";
 
-/** TODO: */
+/** AvailableUser: Renders the available user component
+ *
+ * Props:
+ * - like: function to call in parent component on like
+ * - dislike: function to call in parent component on dislike
+ * - showMatch: Boolean indicating if the match screen shows
+ * - availableUser: Object containing current user to display
+ * - resetShowMatch: function to call in parent component after navigating
+ * away from match
+ *
+ * State:
+ * - currentLike: Object containing user that was just liked
+ *
+ * RoutesList -> AvailableUser -> { userCard, MatchAlert }
+ */
 function AvailableUser({
   like,
   dislike,
@@ -14,13 +28,13 @@ function AvailableUser({
   resetShowMatch }) {
   const [currentLike, setCurrentLike] = useState(null);
 
-  /** TODO: Checks for match and calls parent like function */
+  /** Calls parent like function and sets current liked user */
   async function handleLike() {
     setCurrentLike(availableUser);
     await like(availableUser.id);
   }
 
-  /** TODO: calls parent dislike function */
+  /** Calls parent dislike function */
   async function handleDislike() {
     await dislike(availableUser.id);
   }

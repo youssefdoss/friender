@@ -1,13 +1,16 @@
 import { Link } from "react-router-dom";
-import { XCircle } from "react-bootstrap-icons";
 import "./MatchAlert.scss"
 import logo from "../assets/friender-logo.svg";
 
-/**
- * MatchAlert
- * TODO:
+/** MatchAlert: Renders match alert when needed
+ *
+ * Props:
+ * - match: Object containing match user
+ * - closeModal: function to close the match modal
+ *
+ * AvailableUser -> MatchAlert
  */
-function MatchAlert({ match, viewProfile, closeModal }) {
+function MatchAlert({ match, closeModal }) {
   return (
     <div className="MatchAlert">
       <img src={logo} alt="friender logo"/>

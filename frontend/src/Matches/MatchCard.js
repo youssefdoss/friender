@@ -1,8 +1,12 @@
 import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./MatchCard.scss";
-/**
- * MatchCard
+/** MatchCard: Renders a single match card
+ *
+ * Props:
+ * - match: Object of a match user
+ *
+ * MatchList -> MatchCard
  */
 function MatchCard({ match }) {
   return (

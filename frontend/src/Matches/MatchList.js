@@ -1,9 +1,16 @@
 import { Container } from "react-bootstrap";
 import MatchCard from "./MatchCard";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+/** MatchList: Renders the match list component
+ *
+ * Props:
+ * - matches: Array of match objects
+ *
+ * RoutesList -> MatchList -> MatchCard
+ */
 
 function MatchList({ matches }) {
-  const navigate = useNavigate();
 
   return (
     <Container>

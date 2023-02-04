@@ -1,8 +1,11 @@
 import { useParams } from "react-router-dom"
 import UserCard from "../Swipes/UserCard"
-/**
- * Profile
- * TODO:
+/** Profile: Renders profile patch
+ *
+ * Props:
+ * - matches: Array of match objects
+ *
+ * RoutesList -> Profile -> UserCard
  */
 function Profile({matches}) {
   const { id } = useParams()

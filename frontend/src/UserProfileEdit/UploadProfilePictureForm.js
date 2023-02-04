@@ -1,12 +1,21 @@
 import { useState, useContext } from "react";
 import userContext from "../userContext";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import AlertContainer from "../AlertContainer";
 import { Card } from "react-bootstrap";
 import "./UploadProfilePictureForm.scss";
 
-/** TODO: */
+/** UploadProfilePictureForm: renders form to upload prof pic
+ *
+ * Props:
+ * - uploadPicture: function to be called in parent to upload picture
+ *
+ * state:
+ * - selectedFile: currently selected image
+ * - alerts: Array of alerts to be displayed
+ *
+ * UserProfileEdit -> UploadProfilePictureForm -> AlertContainer
+ */
 
 function UploadProfilePictureForm({ uploadPicture }) {
   const DEFAULT_ERRORS= {

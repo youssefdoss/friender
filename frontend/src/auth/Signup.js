@@ -7,8 +7,15 @@ import { Link } from "react-router-dom";
 import "./auth.scss";
 import logo from "../assets/friender-logo.svg";
 
-/***
- * TODO:
+/** Signup: Renders signup form
+ *
+ * Props:
+ * - signup: function called in parent component to signup
+ *
+ * state:
+ * - formData: Object of form data
+ *
+ * RoutesList -> signup
  */
 function Signup({ signup }) {
   const [formData, setFormData] = useState({

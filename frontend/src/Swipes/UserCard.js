@@ -2,8 +2,12 @@ import { Card } from "react-bootstrap";
 import "./UserCard.scss";
 import { useState } from "react";
 
-/**
- * TODO: Sample usercard, needs to be hooked up
+/** UserCard: Renders individual user card
+ *
+ * Props:
+ * - user: Object containing current user
+ *
+ * { AvailableUser, Profile } -> UserCard
  */
 function UserCard({ user }) {
   const [showBio, setShowBio] = useState(false);

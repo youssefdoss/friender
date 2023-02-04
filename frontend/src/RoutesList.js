@@ -7,7 +7,6 @@ import UserProfileEdit from "./UserProfileEdit/UserProfileEdit"
 import userContext from "./userContext";
 import AvailableUser from './Swipes/AvailableUser';
 import { useContext } from "react";
-import NotFound from "./NotFound";
 
 /** TODO: */
 function RoutesList({

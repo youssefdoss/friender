@@ -7,7 +7,16 @@ import { Link } from "react-router-dom";
 import "./auth.scss";
 import logo from "../assets/friender-logo.svg";
 
-/** TODO: */
+/** Login: Renders login form
+ *
+ * Props:
+ * - login: function called in parent component to login
+ *
+ * state:
+ * - formData: Object of form data
+ *
+ * RoutesList -> Login
+ */
 function Login({ login }){
   const [formData, setFormData] = useState({
     email: "",

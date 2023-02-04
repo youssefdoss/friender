@@ -7,6 +7,16 @@ import userContext from "./userContext";
 import FrienderApi from "./api";
 import decode from "jwt-decode";
 
+/** App: Renders friender app
+ *
+ * State:
+ * - user: Object of logged in user
+ * - token: String token of logged in user
+ * - showMatch: Boolean to be drilled down indicating if match is showing
+ *
+ * App -> RoutesList
+ */
+
 function App() {
   const initialUser = {
     data: null,

@@ -4,8 +4,16 @@ import AlertContainer from "../AlertContainer";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
-/**
- * TODO:
+/** UserProfileEditForm: Renders user profile edit form
+ *
+ * Props:
+ * - editProfile: function to be called in parent to edit profile
+ *
+ * State:
+ * - formData: Current form data
+ * - alerts: alerts to be displayed
+ *
+ * UserProfileEdit -> UserProfileEditForm -> AlertContainer
  */
 function UserProfileEditForm({ editProfile }) {
   const { user } = useContext(userContext);
