@@ -129,7 +129,10 @@ def available_user(id):
             if available_user == None:
                 return jsonify(available_user)
 
-            available_user.distance = get_distance(user.location, available_user.location)
+            available_user.distance = round(get_distance(
+                user.location,
+                available_user.location
+            ))
             return jsonify(available_user.get_display_info())
         except Exception as e:
             return jsonify(errors=e), 404

@@ -40,7 +40,7 @@ function UserCard({ user }) {
       )}
       <div className='UserCard-info'>
         <h2>{user.firstName}</h2>
-        <p>Distance: {Math.round(user.distance)} mi</p>
+        <p>Distance: {user.distance} mi</p>
       </div>
       {/* <button className='btn btn-primary btn-unmatch'>Unmatch</button> */}
     </Card>
