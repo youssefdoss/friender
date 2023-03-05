@@ -1,6 +1,6 @@
-import { Card } from "react-bootstrap";
-import "./UserCard.scss";
-import { useState } from "react";
+import { Card } from 'react-bootstrap';
+import './UserCard.scss';
+import { useState } from 'react';
 
 /** UserCard: Renders individual user card
  *
@@ -21,28 +21,28 @@ function UserCard({ user }) {
   }
 
   return (
-    <Card className="UserCard">
+    <Card className='UserCard'>
       <img
-        className="UserCard-image"
+        className='UserCard-image'
         src={user.imageUrl}
         alt={`${user.firstName} Profile`}
       />
-      <button className="btn btn-primary btn-show-bio" onClick={toggleBio}>
+      <button className='btn btn-primary btn-show-bio' onClick={toggleBio}>
        Read bio
       </button>
 
       {showBio && (
-        <div className="UserCard-bio">
+        <div className='UserCard-bio'>
           <div>
-            {user.bio === null || user.bio === "" ? "there's nothing to read here" : user.bio}
+            {user.bio === null || user.bio === '' ? "there's nothing to read here" : user.bio}
           </div>
         </div>
       )}
-      <div className="UserCard-info">
+      <div className='UserCard-info'>
         <h2>{user.firstName}</h2>
         <p>Distance (pending)</p>
       </div>
-      {/* <button className="btn btn-primary btn-unmatch">Unmatch</button> */}
+      {/* <button className='btn btn-primary btn-unmatch'>Unmatch</button> */}
     </Card>
   );
 }

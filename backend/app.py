@@ -1,27 +1,24 @@
 import os
 from dotenv import load_dotenv
-from datetime import timedelta
 import pgeocode
 
 from flask import (
     Flask, request, jsonify, g
 )
-from sqlalchemy import column
+
 from sqlalchemy.exc import IntegrityError
 
 from forms import (
     UserAddForm, LoginForm, UploadImageForm, UserUpdateForm
 )
 from models import (
-    db, connect_db, User, Likes)
-from functools import wraps
+    db, connect_db, User)
 
 from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
     jwt_required,
     JWTManager,
-    get_current_user
 )
 
 from flask_cors import CORS
@@ -44,14 +41,14 @@ CORS(app)
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
 app.config['SQLALCHEMY_DATABASE_URI'] = (
-    os.environ['DATABASE_URL'].replace("postgres://", "postgresql://"))
+    os.environ['DATABASE_URL'].replace('postgres://', 'postgresql://'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
-app.config["JWT_SECRET_KEY"] = os.environ['SECRET_KEY']
+app.config['JWT_SECRET_KEY'] = os.environ['SECRET_KEY']
 app.config['WTF_CSRF_ENABLED'] = False
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
-app.config["JWT_REFRESH_TOKEN_EXPIRES"] = False
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = False
 jwt = JWTManager(app)
 
 connect_db(app)
@@ -61,14 +58,14 @@ db.create_all()
 @app.before_request
 @jwt_required(optional=True)
 def add_user_to_g():
-    """If we're logged in, add curr user to Flask global."""
+    '''If we're logged in, add curr user to Flask global.'''
     try:
         g.user = User.query.filter_by(id=get_jwt_identity()).one_or_none()
     except:
         g.user = None
 
 
-# TODO: Get location
+# TODO: Get location dynamically rather than zip code
 @app.post('/login')
 def login():
     '''Handle user login and return token on success'''
@@ -76,8 +73,8 @@ def login():
     form = LoginForm(data=data)
     print(data)
     if form.validate_on_submit():
-        email = form.data["email"]
-        password = form.data["password"]
+        email = form.data['email']
+        password = form.data['password']
         user = User.authenticate(email, password)
         if user:
             access_token = create_access_token(identity=user.id)
@@ -97,12 +94,12 @@ def signup():
     if form.validate_on_submit():
         try:
             user = User.signup(
-                password=form.data["password"],
-                email=form.data["email"],
-                first_name=form.data["firstName"],
-                last_name=form.data["lastName"],
-                location=form.data["location"],
-                radius=form.data["radius"],
+                password=form.data['password'],
+                email=form.data['email'],
+                first_name=form.data['firstName'],
+                last_name=form.data['lastName'],
+                location=form.data['location'],
+                radius=form.data['radius'],
             )
             db.session.commit()
             access_token = create_access_token(identity=user.id)
@@ -117,8 +114,8 @@ def signup():
 @app.get('/users/<int:id>/available-user')
 @jwt_required()
 def available_user(id):
-    """Gets all user information associated with user id
-    TODO: move logic into method"""
+    '''Gets all user information associated with user id
+    TODO: move logic into method'''
     if id == g.user.id:
         try:
             user = User.query.get_or_404(g.user.id)
@@ -151,8 +148,7 @@ def available_user(id):
 @app.get('/users/<int:id>/matches')
 @jwt_required()
 def get_all_matches(id):
-    """Gets all matches associated with user id"""
-    # current_user = get_current_user()
+    '''Gets all matches associated with user id'''
     user = User.query.get_or_404(id)
     matches_ids = user.get_matches()
     matches = [User.query.get(id).get_display_info() for id in matches_ids]
@@ -189,7 +185,7 @@ def edit_profile(id):
 @app.get('/users/<int:id>')
 @jwt_required()
 def user_profile(id):
-    """Gets all user information associated with user id"""
+    '''Gets all user information associated with user id'''
     if id == g.user.id:
         return jsonify(user=g.user.serialize())
     else:
@@ -208,12 +204,10 @@ def like(like_id):
     db.session.commit()
 
     if g.user in liked_user.liking:
-        return jsonify(message="match")
+        return jsonify(message='match')
 
-    return jsonify(message="liked")
+    return jsonify(message='liked')
 
-#users/id/like
-#users/id/like/like_id
 @app.post('/users/dislike/<int:dislike_id>')
 @jwt_required()
 def dislike(dislike_id):
@@ -222,7 +216,7 @@ def dislike(dislike_id):
     g.user.disliking.append(disliked_user)
     db.session.commit()
 
-    return jsonify(message="disliked")
+    return jsonify(message='disliked')
 
 
 @app.post('/upload')
@@ -253,19 +247,3 @@ def upload():
     else:
         return jsonify(errors=form.errors), 400
 
-
-# @app.post('/users/')
-# @jwt_required()
-# def user_profile():
-#     """Gets all user information associated with user id"""
-
-
-
-
-
-# Get next available user
-# Get curr_user profile
-# login
-# signup
-# update user
-# get all matches

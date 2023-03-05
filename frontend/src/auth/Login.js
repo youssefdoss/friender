@@ -1,11 +1,11 @@
-import { useState } from "react"
+import { useState } from 'react'
 import AlertContainer from '../AlertContainer';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
-import { Link } from "react-router-dom";
-import "./auth.scss";
-import logo from "../assets/friender-logo.svg";
+import { Link } from 'react-router-dom';
+import './auth.scss';
+import logo from '../assets/friender-logo.svg';
 
 /** Login: Renders login form
  *
@@ -19,13 +19,13 @@ import logo from "../assets/friender-logo.svg";
  */
 function Login({ login }){
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
 
   const [errors, setErrors] = useState({
     messages: [],
-    type: "danger",
+    type: 'danger',
   });
 
   /** Updates state on form input change */
@@ -51,37 +51,37 @@ function Login({ login }){
   }
 
   return (
-    <div className="auth">
-      <div className="col-10 col-sm-8 col-md-6 col-lg-3">
-      <img src={logo} className="logo mb-3" alt="friender logo"/>
-        <h2 className="title pb-2">login to friender</h2>
+    <div className='auth'>
+      <div className='col-10 col-sm-8 col-md-6 col-lg-3'>
+      <img src={logo} className='logo mb-3' alt='friender logo'/>
+        <h2 className='title pb-2'>login to friender</h2>
         {errors.messages.length > 0 && <AlertContainer alerts={errors} />}
         <Card>
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
+            <Form.Group className='mb-3'>
               <Form.Control
-                type="text"
+                type='text'
                 value={formData.email}
-                placeholder="email"
+                placeholder='email'
                 onChange={handleChange}
-                name="email"
+                name='email'
               />
             </Form.Group>
-            <Form.Group className="mb-3">
+            <Form.Group className='mb-3'>
               <Form.Control
-                type="password"
+                type='password'
                 value={formData.password}
-                placeholder="password"
+                placeholder='password'
                 onChange={handleChange}
-                name="password"
+                name='password'
               />
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button variant='primary' type='submit'>
               Login
             </Button>
           </Form>
         </Card>
-        <p className="mt-4">Don't have an account? <Link to="/signup">Sign up</Link>.</p>
+        <p className='mt-4'>Don't have an account? <Link to='/signup'>Sign up</Link>.</p>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-"""SQLAlchemy models for Friender."""
+'''SQLAlchemy models for Friender.'''
 
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
@@ -6,44 +6,44 @@ from flask_sqlalchemy import SQLAlchemy
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 
-DEFAULT_IMAGE_URL = "https://r29-friender.s3.us-west-1.amazonaws.com/default.png"
+DEFAULT_IMAGE_URL = 'https://r29-friender.s3.us-west-1.amazonaws.com/default.png'
 
 class Likes(db.Model):
-    """Connection of a liker and a liked_user"""
+    '''Connection of a liker and a liked_user'''
 
-    __tablename__ = "likes"
+    __tablename__ = 'likes'
 
     user_being_liked_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete="cascade"),
+        db.ForeignKey('users.id', ondelete='cascade'),
         primary_key=True,
     )
 
     user_liking_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete="cascade"),
+        db.ForeignKey('users.id', ondelete='cascade'),
         primary_key=True,
     )
 
 class Dislikes(db.Model):
-    """Connection of a disliker and a disliked_user"""
+    '''Connection of a disliker and a disliked_user'''
 
-    __tablename__ = "dislikes"
+    __tablename__ = 'dislikes'
 
     user_being_disliked_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete="cascade"),
+        db.ForeignKey('users.id', ondelete='cascade'),
         primary_key=True,
     )
 
     user_disliking_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete="cascade"),
+        db.ForeignKey('users.id', ondelete='cascade'),
         primary_key=True,
     )
 
 class User(db.Model):
-    """User in the system"""
+    '''User in the system'''
 
     __tablename__ = 'users'
 
@@ -93,29 +93,29 @@ class User(db.Model):
     )
 
     likers = db.relationship(
-        "User",
-        secondary="likes",
+        'User',
+        secondary='likes',
         primaryjoin=(Likes.user_being_liked_id == id),
         secondaryjoin=(Likes.user_liking_id == id),
-        backref="liking",
+        backref='liking',
     )
     dislikers = db.relationship(
-        "User",
-        secondary="dislikes",
+        'User',
+        secondary='dislikes',
         primaryjoin=(Dislikes.user_being_disliked_id == id),
         secondaryjoin=(Dislikes.user_disliking_id == id),
-        backref="disliking",
+        backref='disliking',
     )
 
     def __repr__(self):
-        return f"<User #{self.id}: {self.first_name} {self.last_name} {self.email}>"
+        return f'<User #{self.id}: {self.first_name} {self.last_name} {self.email}>'
 
     @classmethod
     def signup(cls, email, first_name, last_name, location, password, radius, bio=None, image_url=DEFAULT_IMAGE_URL):
-        """Sign up user.
+        '''Sign up user.
 
         Hashes password and adds user to system.
-        """
+        '''
 
         hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
 
@@ -135,7 +135,7 @@ class User(db.Model):
 
     @classmethod
     def authenticate(cls, email, password):
-        """Find user with `email` and `password`.
+        '''Find user with `email` and `password`.
 
         This is a class method (call it on the class, not an individual user.)
         It searches for a user whose password hash matches this password
@@ -143,7 +143,7 @@ class User(db.Model):
 
         If this can't find matching user (or if password is wrong), returns
         False.
-        """
+        '''
 
         user = cls.query.filter_by(email=email).first()
 
@@ -155,78 +155,52 @@ class User(db.Model):
         return False
 
     def get_display_info(self):
-        """Gets display info for a user"""
+        '''Gets display info for a user'''
         return {
-            "id": self.id,
-            "firstName": self.first_name,
-            "lastName": self.last_name,
-            "imageUrl": self.image_url,
-            "bio": self.bio
+            'id': self.id,
+            'firstName': self.first_name,
+            'lastName': self.last_name,
+            'imageUrl': self.image_url,
+            'bio': self.bio
         }
 
-
-    ## TODO: Add radius functionality
-    # def get_next_available_user(self):
-    #     """Gets a user who the current user has yet to see"""
-    #     disliked_users_ids = [u.id for u in self.disliking]
-    #     liked_users_ids = [u.id for u in self.liking]
-
-    #     next_available_user = self.query_available_user(liked_users_ids, disliked_users_ids)
-
-    #     return next_available_user
-
-    # def query_available_user(cls, liked_ids, disliked_ids):
-    #     print("LIKED IDS", liked_ids)
-    #     breakpoint()
-    #     available_user = cls.query.filter(
-    #         ~cls.id.in_(liked_ids + disliked_ids)
-    #     ).first()
-    #     breakpoint()
-    #     return available_user
-
-
-    ## method that shows matches
     def get_matches(self):
-        """Gets all matches for a user"""
+        '''Gets all matches for a user'''
         liked_user_ids = set([user.id for user in self.liking])
         liked_by_user_ids = set([user.id for user in self.likers])
         matches = list(liked_by_user_ids.intersection(liked_user_ids))
 
         return matches
 
-    # def get_user(cls, id):
-    #     '''Gets user by id'''
-    #     return cls.query.get(id)
-
     def serialize_display(self, match):
-        """Serialize other user object"""
+        '''Serialize other user object'''
         return {
-            "id": match.id,
-            "email": match.email,
-            "firstName": match.first_name,
-            "imageUrl": match.image_url,
-            "bio": match.bio,
-            "location": match.location,
-            "radius": match.radius,
+            'id': match.id,
+            'email': match.email,
+            'firstName': match.first_name,
+            'imageUrl': match.image_url,
+            'bio': match.bio,
+            'location': match.location,
+            'radius': match.radius,
         }
 
     def serialize(self):
-        """Serialize self user object"""
+        '''Serialize self user object'''
         return {
-            "id": self.id,
-            "email": self.email,
-            "firstName": self.first_name,
-            "lastName": self.last_name,
-            "imageUrl": self.image_url,
-            "bio": self.bio,
-            "location": self.location,
-            "radius": self.radius,
+            'id': self.id,
+            'email': self.email,
+            'firstName': self.first_name,
+            'lastName': self.last_name,
+            'imageUrl': self.image_url,
+            'bio': self.bio,
+            'location': self.location,
+            'radius': self.radius,
         }
 def connect_db(app):
-    """Connect this database to provided Flask app.
+    '''Connect this database to provided Flask app.
 
     You should call this in your Flask app.
-    """
+    '''
 
     app.app_context().push()
     db.app = app

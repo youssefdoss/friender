@@ -1,9 +1,9 @@
-import { useState, useContext } from "react";
-import userContext from "../userContext";
-import AlertContainer from "../AlertContainer";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Card from "react-bootstrap/Card";
+import { useState, useContext } from 'react';
+import userContext from '../userContext';
+import AlertContainer from '../AlertContainer';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Card from 'react-bootstrap/Card';
 /** UserProfileEditForm: Renders user profile edit form
  *
  * Props:
@@ -21,14 +21,14 @@ function UserProfileEditForm({ editProfile }) {
     firstName: user.firstName,
     lastName: user.lastName,
     location: user.location,
-    bio: user.bio || "",
+    bio: user.bio || '',
     radius: user.radius || 1000,
   };
   const [formData, setFormData] = useState(initialData);
 
   const [alerts, setAlerts] = useState({
     messages: [],
-    type: "danger",
+    type: 'danger',
   });
 
   /** Updates state on form input change */
@@ -47,69 +47,69 @@ function UserProfileEditForm({ editProfile }) {
       await editProfile(formData);
 
       setAlerts({
-        messages: ["Updated profile successfully"],
-        type: "success",
+        messages: ['Updated profile successfully'],
+        type: 'success',
       });
     } catch (err) {
       setAlerts((prev) => ({
         ...prev,
         messages: err,
-        type: "danger",
+        type: 'danger',
       }));
     }
   }
 
   return (
-    <div className="col-12 col-md-6">
+    <div className='col-12 col-md-6'>
       {alerts.messages.length > 0 && <AlertContainer alerts={alerts} />}
       <Card>
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="firstName">First Name</Form.Label>
+          <Form.Group className='mb-3'>
+            <Form.Label htmlFor='firstName'>First Name</Form.Label>
             <Form.Control
-              type="text"
+              type='text'
               value={formData.firstName}
               onChange={handleChange}
-              name="firstName"
+              name='firstName'
             />
           </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="lastName">Last Name</Form.Label>
+          <Form.Group className='mb-3'>
+            <Form.Label htmlFor='lastName'>Last Name</Form.Label>
             <Form.Control
-              type="text"
+              type='text'
               value={formData.lastName}
               onChange={handleChange}
-              name="lastName"
+              name='lastName'
             />
           </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="location">Location (Zip Code)</Form.Label>
+          <Form.Group className='mb-3'>
+            <Form.Label htmlFor='location'>Location (Zip Code)</Form.Label>
             <Form.Control
-              type="number"
+              type='number'
               value={formData.location}
               onChange={handleChange}
-              name="location"
+              name='location'
             />
           </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="radius">Radius (miles)</Form.Label>
+          <Form.Group className='mb-3'>
+            <Form.Label htmlFor='radius'>Radius (miles)</Form.Label>
             <Form.Control
-              type="number"
+              type='number'
               value={formData.radius}
               onChange={handleChange}
-              name="radius"
+              name='radius'
             />
           </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="bio">Bio (Optional)</Form.Label>
+          <Form.Group className='mb-3'>
+            <Form.Label htmlFor='bio'>Bio (Optional)</Form.Label>
             <Form.Control
-              as="textarea"
+              as='textarea'
               value={formData.bio}
               onChange={handleChange}
-              name="bio"
+              name='bio'
             />
           </Form.Group>
-          <Button variant="primary" type="submit">
+          <Button variant='primary' type='submit'>
             Submit
           </Button>
         </Form>

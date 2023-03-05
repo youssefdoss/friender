@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, Email, Length, NumberRange
 from flask_wtf.file import FileRequired
 
 class UserAddForm(FlaskForm):
-    """Form for adding users."""
+    '''Form for adding users.'''
 
     email = StringField('E-mail', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[Length(min=6)])
@@ -14,7 +14,7 @@ class UserAddForm(FlaskForm):
     radius = IntegerField('radius', validators=[DataRequired()])
 
 class UserUpdateForm(FlaskForm):
-    """Form for updating a user."""
+    '''Form for updating a user.'''
 
     firstName = StringField('First Name', validators=[DataRequired()])
     lastName = StringField('Last Name', validators=[DataRequired()])
@@ -23,7 +23,7 @@ class UserUpdateForm(FlaskForm):
     bio = TextAreaField('bio')
 
 class LoginForm(FlaskForm):
-    """Login form."""
+    '''Login form.'''
 
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])

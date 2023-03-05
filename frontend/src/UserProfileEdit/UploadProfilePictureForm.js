@@ -1,9 +1,9 @@
-import { useState, useContext } from "react";
-import userContext from "../userContext";
-import Form from "react-bootstrap/Form";
-import AlertContainer from "../AlertContainer";
-import { Card } from "react-bootstrap";
-import "./UploadProfilePictureForm.scss";
+import { useState, useContext } from 'react';
+import userContext from '../userContext';
+import Form from 'react-bootstrap/Form';
+import AlertContainer from '../AlertContainer';
+import { Card } from 'react-bootstrap';
+import './UploadProfilePictureForm.scss';
 
 /** UploadProfilePictureForm: renders form to upload prof pic
  *
@@ -20,7 +20,7 @@ import "./UploadProfilePictureForm.scss";
 function UploadProfilePictureForm({ uploadPicture }) {
   const DEFAULT_ERRORS= {
     messages: [],
-    type: "danger",
+    type: 'danger',
   }
   const { user } = useContext(userContext);
   const [selectedFile, setSelectedFile] = useState();
@@ -36,12 +36,12 @@ function UploadProfilePictureForm({ uploadPicture }) {
     evt.preventDefault();
     try {
       const formData = new FormData();
-      formData.append("file", selectedFile);
+      formData.append('file', selectedFile);
       await uploadPicture(formData);
       setAlerts((prev) => ({
         ...prev,
-        messages: ["Successfully updated picture!"],
-        type: "success"
+        messages: ['Successfully updated picture!'],
+        type: 'success'
       }));
     } catch (err) {
       setAlerts((prev) => ({
@@ -52,16 +52,16 @@ function UploadProfilePictureForm({ uploadPicture }) {
   }
 
   return (
-    <div className="UploadProfilePictureForm col-12 col-md-6">
+    <div className='UploadProfilePictureForm col-12 col-md-6'>
       {alerts.messages.length > 0 && <AlertContainer alerts={alerts} />}
-      <Card className="picture-preview mb-4">
+      <Card className='picture-preview mb-4'>
         <img src={user.imageUrl} alt={`${user.firstName}`} />
       </Card>
       <Form onSubmit={handleSubmssion}>
-        <div className="input-group">
-          <Form.Control type="file" onChange={handleChange} />
-          <div className="input-group-append">
-            <button className="btn btn-primary" type="submit">
+        <div className='input-group'>
+          <Form.Control type='file' onChange={handleChange} />
+          <div className='input-group-append'>
+            <button className='btn btn-primary' type='submit'>
               Upload
             </button>
           </div>

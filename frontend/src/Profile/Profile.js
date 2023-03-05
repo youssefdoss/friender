@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom"
-import UserCard from "../Swipes/UserCard"
+import { useParams } from 'react-router-dom'
+import UserCard from '../Swipes/UserCard'
 /** Profile: Renders profile patch
  *
  * Props:

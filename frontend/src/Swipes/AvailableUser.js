@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { Container } from "react-bootstrap";
-import UserCard from "./UserCard"
-import { EmojiFrown, EmojiLaughing } from "react-bootstrap-icons";
-import "./AvailableUser.scss"
-import MatchAlert from "./MatchAlert";
+import { useState } from 'react';
+import { Container } from 'react-bootstrap';
+import UserCard from './UserCard'
+import { EmojiFrown, EmojiLaughing } from 'react-bootstrap-icons';
+import './AvailableUser.scss'
+import MatchAlert from './MatchAlert';
 
 /** AvailableUser: Renders the available user component
  *
@@ -40,12 +40,12 @@ function AvailableUser({
   }
 
   return(
-    <Container className="AvailableUser">
+    <Container className='AvailableUser'>
       {showMatch && <MatchAlert match={currentLike} closeModal={resetShowMatch}/>}
       {availableUser ? (
-        <div className="AvailableUser-wrapper">
+        <div className='AvailableUser-wrapper'>
           <UserCard user={availableUser} />
-          <div className="UserCard-actions">
+          <div className='UserCard-actions'>
             <button onClick={handleDislike}><EmojiFrown size={30} /></button>
             <button onClick={handleLike}><EmojiLaughing size={30} /></button>
           </div>

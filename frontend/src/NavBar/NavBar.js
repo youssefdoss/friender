@@ -1,9 +1,9 @@
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import Container from "react-bootstrap/Container";
-import "./NavBar.scss";
-import logo from "../assets/friender-icon.svg";
-import { NavLink, Link } from "react-router-dom";
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import Container from 'react-bootstrap/Container';
+import './NavBar.scss';
+import logo from '../assets/friender-icon.svg';
+import { NavLink, Link } from 'react-router-dom';
 
 /** NavBar: Renders navbar
  *
@@ -15,24 +15,24 @@ import { NavLink, Link } from "react-router-dom";
 
 function NavBar({ logout }) {
   return (
-    <Navbar variant="transparent" expand="lg">
+    <Navbar variant='transparent' expand='lg'>
       <Container fluid>
         <Nav>
           <Navbar.Brand>
-            <Link to="/">
-              <img src={logo} alt="logo" />
+            <Link to='/'>
+              <img src={logo} alt='logo' />
             </Link>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Toggle aria-controls='basic-navbar-nav' />
           </Navbar.Brand>
-          <Navbar.Collapse id="basic-navbar-nav">
+          <Navbar.Collapse id='basic-navbar-nav'>
 
-            <NavLink className="nav-link" to="/">
+            <NavLink className='nav-link' to='/'>
               Get Matching
             </NavLink>
-            <NavLink className="nav-link" to="/matches">
+            <NavLink className='nav-link' to='/matches'>
               My Matches
             </NavLink>
-            <NavLink className="nav-link" to="/edit-profile">
+            <NavLink className='nav-link' to='/edit-profile'>
               Profile
             </NavLink>
             <Nav.Link onClick={logout}>Log Out</Nav.Link>

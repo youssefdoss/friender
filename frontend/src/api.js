@@ -1,39 +1,39 @@
-import axios from "axios";
+import axios from 'axios';
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:5001";
+const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5001';
 
 /** FrienderApi: Class with methods to make requests to api */
 
 class FrienderApi {
   static token;
 
-  static async request(endpoint, data = {}, method = "get") {
-    console.debug("API Call:", endpoint, data, method);
+  static async request(endpoint, data = {}, method = 'get') {
+    console.debug('API Call:', endpoint, data, method);
 
     const url = `${BASE_URL}/${endpoint}`;
     let headers = {
       Authorization: `Bearer ${FrienderApi.token}`,
-      "Content-Type": `application/json`,
+      'Content-Type': `application/json`,
     };
 
-    if (endpoint === "login" || endpoint === "signup") {
+    if (endpoint === 'login' || endpoint === 'signup') {
       headers = {
-        "Content-Type": `application/json`,
+        'Content-Type': `application/json`,
       };
     }
-    if (endpoint === "upload") {
-      headers["Content-Type"] = "multipart/form-data";
+    if (endpoint === 'upload') {
+      headers['Content-Type'] = 'multipart/form-data';
     }
 
-    const params = method === "get" ? data : {};
+    const params = method === 'get' ? data : {};
     try {
       const result = await axios({ url, method, data, params, headers });
       return result.data;
     } catch (err) {
-      console.error("API Error:", err.response);
+      console.error('API Error:', err.response);
       let message = err.response.data.errors;
 
-      if (typeof message === "object" && !Array.isArray(message)) {
+      if (typeof message === 'object' && !Array.isArray(message)) {
         let updatedMessage = [];
         for (let key in message) {
           updatedMessage.push(`${key}: ${message[key]}`);
@@ -55,7 +55,7 @@ class FrienderApi {
    */
 
   static async login(data) {
-    let res = await this.request("login", data, "post");
+    let res = await this.request('login', data, 'post');
     return res.token;
   }
 
@@ -67,7 +67,7 @@ class FrienderApi {
    */
 
   static async signup(data) {
-    let res = await this.request("signup", data, "post");
+    let res = await this.request('signup', data, 'post');
     return res.token;
   }
 
@@ -79,7 +79,7 @@ class FrienderApi {
    */
 
   static async editProfile(data, id) {
-    let res = await this.request(`users/${id}`, data, "patch");
+    let res = await this.request(`users/${id}`, data, 'patch');
     return res.user;
   }
 
@@ -109,7 +109,7 @@ class FrienderApi {
    */
 
   static async likeUser(id) {
-    let res = await this.request(`users/like/${id}`, {}, "post");
+    let res = await this.request(`users/like/${id}`, {}, 'post');
     return res;
   }
 
@@ -121,7 +121,7 @@ class FrienderApi {
    */
 
   static async dislikeUser(id) {
-    let res = await this.request(`users/dislike/${id}`, {}, "post");
+    let res = await this.request(`users/dislike/${id}`, {}, 'post');
     return res;
   }
 
@@ -145,7 +145,7 @@ class FrienderApi {
    */
 
   static async uploadImage(data) {
-    let res = await this.request(`upload`, data, "post");
+    let res = await this.request(`upload`, data, 'post');
     return res;
   }
 }

@@ -1,7 +1,7 @@
-import { Container } from "react-bootstrap";
-import UploadProfilePictureForm from "./UploadProfilePictureForm";
-import UserProfileEditForm from "./UserProfileEditForm";
-import "./UserProfileEdit.scss"
+import { Container } from 'react-bootstrap';
+import UploadProfilePictureForm from './UploadProfilePictureForm';
+import UserProfileEditForm from './UserProfileEditForm';
+import './UserProfileEdit.scss'
 
 /** UserProfileEdit: Renders user profile form
  *
@@ -10,9 +10,9 @@ import "./UserProfileEdit.scss"
  */
 function UserProfileEdit({ uploadPicture, editProfile }) {
   return (
-    <Container className="UserProfileEdit mt-5">
+    <Container className='UserProfileEdit mt-5'>
       <h1>Edit Profile</h1>
-      <div className="row">
+      <div className='row'>
         <UserProfileEditForm editProfile={editProfile}/>
         <UploadProfilePictureForm uploadPicture={uploadPicture} />
       </div>

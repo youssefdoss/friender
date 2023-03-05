@@ -1,11 +1,11 @@
-import { BrowserRouter } from "react-router-dom";
-import { useState, useEffect } from "react";
-import NavBar from "./NavBar/NavBar";
-import Loader from "./Loader";
-import RoutesList from "./RoutesList";
-import userContext from "./userContext";
-import FrienderApi from "./api";
-import decode from "jwt-decode";
+import { BrowserRouter } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import NavBar from './NavBar/NavBar';
+import Loader from './Loader';
+import RoutesList from './RoutesList';
+import userContext from './userContext';
+import FrienderApi from './api';
+import decode from 'jwt-decode';
 
 /** App: Renders friender app
  *
@@ -25,15 +25,15 @@ function App() {
     isLoading: true,
   };
   const [user, setUser] = useState(initialUser);
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [token, setToken] = useState(localStorage.getItem('token'));
   const [showMatch, setShowMatch] = useState(false);
 
   useEffect(
     function updateLocalStorage() {
       if (token) {
-        localStorage.setItem("token", token);
+        localStorage.setItem('token', token);
       } else {
-        localStorage.removeItem("token");
+        localStorage.removeItem('token');
       }
     },
     [token]
@@ -117,7 +117,7 @@ function App() {
    */
   async function like(id) {
     const res = await FrienderApi.likeUser(id);
-    if (res.message === "match") {
+    if (res.message === 'match') {
       setShowMatch(true);
     }
     const nextAvailableUser = await FrienderApi.getAvailableUser(user.data.id);
@@ -155,7 +155,7 @@ function App() {
     setUser((prev) => ({
       ...prev,
       data: {
-        ...data,
+        ...prev.data,
         imageUrl: res.imageUrl
       }
     }));
@@ -169,7 +169,7 @@ function App() {
    */
 
   return (
-    <div className="App">
+    <div className='App'>
       <userContext.Provider value={{ user: user.data }}>
         <BrowserRouter>
           {user.data && <NavBar logout={logout} />}
