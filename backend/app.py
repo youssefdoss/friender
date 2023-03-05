@@ -1,30 +1,20 @@
 import os
 from dotenv import load_dotenv
-import pgeocode
-
-from flask import (
-    Flask, request, jsonify, g
-)
-
+from utils import get_distance
+from flask import Flask, request, jsonify, g
 from sqlalchemy.exc import IntegrityError
-
-from forms import (
-    UserAddForm, LoginForm, UploadImageForm, UserUpdateForm
-)
-from models import (
-    db, connect_db, User)
-
+from forms import UserAddForm, LoginForm, UploadImageForm, UserUpdateForm
+from models import db, connect_db, User
 from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
     jwt_required,
     JWTManager,
 )
-
 from flask_cors import CORS
-
 import boto3
 from werkzeug.utils import secure_filename
+
 load_dotenv()
 
 s3 = boto3.client('s3',
@@ -122,14 +112,13 @@ def available_user(id):
             all_users = User.query.all()
             disliked_users_ids = set([u.id for u in user.disliking])
             liked_users_ids = set([u.id for u in user.liking])
-            dist = pgeocode.GeoDistance('us')
             in_range_ids = set([
                 u.id
                 for u
                 in all_users
                 if
-                    dist.query_postal_code(str(u.location), str(user.location)) < user.radius
-                    and dist.query_postal_code(str(u.location), str(user.location)) < u.radius
+                    get_distance(u.location, user.location) < user.radius
+                    and get_distance(u.location, user.location) < u.radius
             ])
 
             available_user = User.query.filter(
@@ -140,6 +129,7 @@ def available_user(id):
             if available_user == None:
                 return jsonify(available_user)
 
+            available_user.distance = get_distance(user.location, available_user.location)
             return jsonify(available_user.get_display_info())
         except Exception as e:
             return jsonify(errors=e), 404

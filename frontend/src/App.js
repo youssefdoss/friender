@@ -170,6 +170,7 @@ function App() {
 
   return (
     <div className='App'>
+      {console.log(user)}
       <userContext.Provider value={{ user: user.data }}>
         <BrowserRouter>
           {user.data && <NavBar logout={logout} />}

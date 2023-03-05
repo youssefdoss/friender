@@ -161,7 +161,8 @@ class User(db.Model):
             'firstName': self.first_name,
             'lastName': self.last_name,
             'imageUrl': self.image_url,
-            'bio': self.bio
+            'bio': self.bio,
+            'distance': self.distance,
         }
 
     def get_matches(self):
