@@ -19,7 +19,8 @@ function RoutesList({
   showMatch,
   availableUser,
   resetShowMatch,
-  matches
+  matches,
+  currentLike
 }) {
   const { user } = useContext(userContext)
   return(
@@ -48,6 +49,7 @@ function RoutesList({
               showMatch={showMatch}
               availableUser={availableUser}
               resetShowMatch={resetShowMatch}
+              currentLike={currentLike}
             />
           }/>
           <Route path='*' element={<Navigate to='/'/>}/>

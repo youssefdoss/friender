@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Container } from 'react-bootstrap';
 import UserCard from './UserCard'
 import { EmojiFrown, EmojiLaughing } from 'react-bootstrap-icons';
@@ -25,12 +24,11 @@ function AvailableUser({
   dislike,
   showMatch,
   availableUser,
-  resetShowMatch }) {
-  const [currentLike, setCurrentLike] = useState(null);
-
+  resetShowMatch,
+  currentLike
+}) {
   /** Calls parent like function and sets current liked user */
   async function handleLike() {
-    setCurrentLike(availableUser);
     await like(availableUser.id);
   }
 
@@ -41,6 +39,7 @@ function AvailableUser({
 
   return(
     <Container className='AvailableUser'>
+      {console.log('currentLike: ', currentLike)}
       {showMatch && <MatchAlert match={currentLike} closeModal={resetShowMatch}/>}
       {availableUser ? (
         <div className='AvailableUser-wrapper'>

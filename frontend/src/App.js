@@ -1,5 +1,5 @@
 import { BrowserRouter } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import NavBar from './NavBar/NavBar';
 import Loader from './Loader';
 import RoutesList from './RoutesList';
@@ -22,11 +22,14 @@ function App() {
     data: null,
     availableUser: null,
     matches: null,
-    isLoading: true,
   };
   const [user, setUser] = useState(initialUser);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [showMatch, setShowMatch] = useState(false);
+  const [isLikingOrDisliking, setIsLikingOrDisliking] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentLike, setCurrentLike] = useState(null);
+  const isMounted = useRef(false);
 
   useEffect(
     function updateLocalStorage() {
@@ -51,10 +54,10 @@ function App() {
             const availableUser = await FrienderApi.getAvailableUser(user.id);
             setUser({
               data: user,
-              isLoading: false,
               availableUser: availableUser,
               matches: matches
             });
+            setIsLoading(false);
           } catch (err) {
             resetUser();
           }
@@ -67,12 +70,37 @@ function App() {
     [token]
   );
 
+  useEffect(
+    function likeOrDislike() {
+      if (isMounted.current) {
+        setIsLoading(true);
+        async function fetchAvailableUser() {
+          try {
+            setCurrentLike(user.availableUser);
+            const nextAvailableUser = await FrienderApi.getAvailableUser(user.data.id);
+            setUser((prev) => ({
+              ...prev,
+              availableUser: nextAvailableUser,
+            }));
+            setIsLoading(false);
+          } catch (err) {
+            // TODO:
+          }
+        }
+        fetchAvailableUser();
+      } else {
+        isMounted.current = true;
+      }
+    },
+    [isLikingOrDisliking]
+  )
+
   /** Resets user to an initial state */
   function resetUser() {
     setUser({
       ...initialUser,
-      isLoading: false,
     });
+    setIsLoading(false);
   }
 
   /** Logs user out of application */
@@ -86,6 +114,7 @@ function App() {
    */
   async function login(data) {
     const token = await FrienderApi.login(data);
+    setIsLoading(true);
     setToken(token);
   }
 
@@ -95,6 +124,7 @@ function App() {
    */
   async function signup(data) {
     const token = await FrienderApi.signup(data);
+    setIsLoading(true);
     setToken(token);
   }
 
@@ -107,8 +137,8 @@ function App() {
     setUser((prev) => ({
       ...prev,
       data: newUserData,
-      isLoading: false,
     }));
+    setIsLoading(true);
   }
 
   /** Likes a user and gets the next available user
@@ -116,15 +146,21 @@ function App() {
    * id: id of the user being liked
    */
   async function like(id) {
+    setIsLikingOrDisliking((prev) => !prev);
     const res = await FrienderApi.likeUser(id);
+    console.log('availableUser in like: ', user.availableUser)
     if (res.message === 'match') {
       setShowMatch(true);
+      setUser((prev) => ({
+        ...prev,
+        matches: [...prev.matches, {...prev.availableUser}]
+      }))
     }
-    const nextAvailableUser = await FrienderApi.getAvailableUser(user.data.id);
-    setUser((prev) => ({
-      ...prev,
-      availableUser: nextAvailableUser,
-    }));
+    // const nextAvailableUser = await FrienderApi.getAvailableUser(user.data.id);
+    // setUser((prev) => ({
+    //   ...prev,
+    //   availableUser: nextAvailableUser,
+    // }));
   }
 
   /** Resets show match to false */
@@ -137,12 +173,13 @@ function App() {
    * id: id of the user being disliked
    */
   async function dislike(id) {
+    setIsLikingOrDisliking((prev) => !prev);
     await FrienderApi.dislikeUser(id);
-    const nextAvailableUser = await FrienderApi.getAvailableUser(user.data.id);
-    setUser((prev) => ({
-      ...prev,
-      availableUser: nextAvailableUser,
-    }));
+    // const nextAvailableUser = await FrienderApi.getAvailableUser(user.data.id);
+    // setUser((prev) => ({
+    //   ...prev,
+    //   availableUser: nextAvailableUser,
+    // }));
   }
 
 
@@ -161,7 +198,7 @@ function App() {
     }));
   }
 
-  if (user.isLoading) return <Loader />;
+  if (isLoading) return <Loader />;
 
   /** Edits a user's profile information and updates across app
    *
@@ -170,6 +207,7 @@ function App() {
 
   return (
     <div className='App'>
+      {console.log(user.matches)}
       <userContext.Provider value={{ user: user.data }}>
         <BrowserRouter>
           {user.data && <NavBar logout={logout} />}
@@ -184,6 +222,7 @@ function App() {
             availableUser={user.availableUser}
             resetShowMatch={resetShowMatch}
             matches={user.matches}
+            currentLike={currentLike}
           />
         </BrowserRouter>
       </userContext.Provider>

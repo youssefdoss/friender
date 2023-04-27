@@ -13,6 +13,7 @@ import logo from '../assets/friender-logo.svg';
 function MatchAlert({ match, closeModal }) {
   return (
     <div className='MatchAlert'>
+    {console.log('match: ', match)}
       <img src={logo} alt='friender logo'/>
       <p>You've matched with {match.firstName}!</p>
       <div>
